@@ -1,2 +1,3 @@
 node_modules/
-.yarn-error.log
+vods/
+yarn-error.log

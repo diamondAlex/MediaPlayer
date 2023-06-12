@@ -1,32 +1,5 @@
-let ip = "http://192.168.1.13:8080/"
-let ip2 = "http://192.168.0.113:8080/"
-let url
+let url = window.location.origin
 let randDur = 5
-
-ping(ip)
-
-function ping(ip) {
-
-    fetch(ip2)
-    .then((res) => res.json())
-    .then((json) =>{
-        if(json){
-            url = ip2
-            randDur = 20
-            fetchInfo()
-        }
-        fetch(ip)
-        .then((res) => res.json())
-        .then((json) =>{
-            if(json){
-                randDur = 5
-                url = ip
-                fetchInfo()
-            }
-        })
-    })
-}
-
 
 let player = videojs("player")
 player.fill(true)
@@ -45,6 +18,7 @@ let setPlaying = (url) =>{
     document.getElementById("playing")
     playing.innerHTML = url + "<br>"
     
+    console.log(url)
     player.src({
         type: "video/mp4",
         src: url 
@@ -67,7 +41,7 @@ let playPrev = () =>{
     }
     let next = fileNames[file-1]
 
-    setPlaying(url + next.substring(1))
+    setPlaying(url + "/" + next)
 
     player.play()
 }
@@ -81,7 +55,7 @@ let playNext = () =>{
     let next = fileNames[file+1]
 
 
-    setPlaying(url + next.substring(1))
+    setPlaying(url +"/" +  next)
     player.play()
 }
 
@@ -105,18 +79,9 @@ skip=(time)=>{
 
 player.on("mouseover", () => inFocus = true)
 player.on("mouseleave", () => inFocus = false)
-console.log('test')
 
 document.addEventListener("keydown", (e) => {
     let c = e.keyCode
-    console.log('test')
-    console.log('test')
-    console.log('test')
-    console.log('test')
-    console.log('test')
-    console.log(c)
-    console.log(e.ctrlKey)
-    console.log('test')
     if(c==37){
         backward()
     }
@@ -158,7 +123,7 @@ document.addEventListener("keydown", (e) => {
 let fileNames = []
 let fetchInfo = () => {
     
-    fetch(url,{
+    fetch(url+"/files",{
         method:"GET",
     })
         .then((ret) => ret.json())
@@ -169,7 +134,7 @@ let fetchInfo = () => {
                 let link = document.createElement("p")
                 link.addEventListener("click", (e) => {
                     player.muted(true)
-                    setPlaying(url + line.substring(1))
+                    setPlaying(url + "/" + line)
                 })
 
                 link.innerHTML = line
@@ -178,7 +143,7 @@ let fetchInfo = () => {
             }
     })
 }
-
+fetchInfo()
 
 document.getElementById("rand").addEventListener("click", ()=>{
       playRandom()
@@ -190,7 +155,7 @@ let amount = 0
 let playRandom = () => {
     random = 1
     let id = Math.floor(Math.random()*fileNames.length)
-    setPlaying(url+ fileNames[id].substring(1))
+    setPlaying(url+ "/" + fileNames[id])
     player.one("loadedmetadata", () =>{
         let time = player.duration()
         let randTime = Math.floor(Math.random()*time)

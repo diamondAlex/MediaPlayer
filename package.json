@@ -1,7 +1,7 @@
 {
     "scripts": {
-        "start": "yarn serve serve/",
-        "server":"yarn nodemon server.js"
+        "start": "yarn serve src/",
+        "server":"yarn nodemon ./server.js"
     },
     "dependencies": {
         "nodemon": "^2.0.22",

@@ -1,24 +1,37 @@
 var http = require('http');
 var fs = require('fs')
 
+let path = "vods/"
+
 //create a server object:
 http.createServer(function (req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     let page = new URL(req.url,'https://whatever.org/')
     let path = page.pathname.replaceAll("%20"," ")
-    console.log(path)
+    console.log("path = " +path)
 
-    
-    if(path.includes(".mp4")){
+    if(path == '/'){
+        let page = fs.readFileSync("src/test.html")
+        res.write(page)
+        res.end()
+    }
+    else if(path.includes(".mp4")){
         video(req,res,path)
     }
-    else{
+    else if(path == "/files"){
         let files = listFiles()
         let json = JSON.stringify({files:files})
 
         res.write(json)
         res.end(); 
     
+    }
+    else{
+        console.log(__dirname)
+        console.log("src" + path)
+        let page = fs.readFileSync("src" + path)
+        res.write(page)
+        res.end()
     }
 
 }).listen(8080, () => console.log("connected on 8080")); //the server object listens on port 8080
@@ -29,8 +42,8 @@ let video = (req,res,path) => {
         if (!range) {
             res.status = 400
         }
-        let videoPath = path
-        let videoSize = fs.statSync(path).size;
+        let videoPath = require('path').join(__dirname, path)
+        let videoSize = fs.statSync(videoPath).size;
         let CHUNK_SIZE = 10 ** 6;
         let start = Number(range.replace(/\D/g, ""));
         let end = Math.min(start + CHUNK_SIZE, videoSize - 1);
@@ -45,23 +58,24 @@ let video = (req,res,path) => {
         let videoStream = fs.createReadStream(videoPath, { start,end });
         videoStream.pipe(res); 
     }
-    catch{
-        console.log('oops')
+    catch(err){
+        console.log(err)
     }
 }
 
 let listFiles = () =>{
     let paths = []
-    let dir = fs.readdirSync("/media/drive/")
+    console.log(__dirname)
+    let dir = fs.readdirSync(require('path').resolve(__dirname, path))
     for(folder of dir){
         try{
-            let files =  fs.readdirSync("/media/drive/"+folder)
+            let files =  fs.readdirSync(path+folder)
             for(let file of files){
-                paths.push("/media/drive/"+folder+"/"+file)
+                paths.push(path+folder+"/"+file)
             }
         }
         catch{
-            paths.push("/media/drive/"+folder)
+            paths.push(path+folder)
         }
     }
     return paths
