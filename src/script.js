@@ -1,5 +1,10 @@
 let url = window.location.origin
 let randDur = 5
+let vodsAmt = 0
+
+let randomIndex = () =>{
+    return Math.floor(Math.random() * (vodsAmt - 1))
+}
 
 let player = videojs("player")
 player.fill(true)
@@ -8,14 +13,8 @@ player.autoplay(true)
 player.muted(false)
 let split = new Map()
 
-let span = document.getElementById('list')
-let playing = document.createElement("p")
-playing.id = "playing"
-playing.classList.add("playing")
-span.appendChild(playing)
-
 let setPlaying = (url) =>{
-    document.getElementById("playing")
+    let playing = document.getElementById("playing")
     playing.innerHTML = url + "<br>"
     
     console.log(url)
@@ -49,10 +48,12 @@ let playPrev = () =>{
 let playNext = () =>{
     let current = player.lastSource_.player
     let file = fileNames.findIndex((val) => current.includes(val))
+    console.log(file)
     if (file == fileNames.length - 1){
         file =-1 
     }
     let next = fileNames[file+1]
+    console.log(fileNames)
 
 
     setPlaying(url +"/" +  next)
@@ -130,23 +131,47 @@ let fetchInfo = () => {
         .then((json) =>{
             let span = document.getElementById("list")         
             fileNames = json.files
-            for(let line of json.files){
-                let link = document.createElement("p")
-                link.addEventListener("click", (e) => {
-                    player.muted(true)
-                    setPlaying(url + "/" + line)
-                })
-
-                link.innerHTML = line
-
-                span.appendChild(link)
-            }
+            vodsAmt = fileNames.length
+            setList(span)
+            setPlaying(url + "/" + fileNames[randomIndex()])
     })
 }
+
+let setList = (span) => {
+    span.innerHTML = ""
+    for(let line of fileNames){
+        let link = document.createElement("p")
+        link.addEventListener("click", (e) => {
+            player.muted(true)
+            setPlaying(url + "/" + line)
+        })
+
+        link.innerHTML = line
+
+        span.appendChild(link)
+    }
+}
+
 fetchInfo()
 
-document.getElementById("rand").addEventListener("click", ()=>{
+function shuffleList(){
+    console.log("in shuffleList")
+    let shuffletimes = fileNames.length * 2
+    for(i = 0;i < shuffletimes; i++){
+        let index = randomIndex()
+        let index2 = randomIndex()
+        temp = fileNames[index]
+        fileNames[index] = fileNames[index2]
+        fileNames[index2] = temp
+    }
+    setList(document.getElementById("list")) 
+}
+
+document.getElementById("random").addEventListener("click", ()=>{
       playRandom()
+})
+document.getElementById("shuffle").addEventListener("click", ()=>{
+      shuffleList()
 })
 
 let random = 0

@@ -8,7 +8,6 @@ http.createServer(function (req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     let page = new URL(req.url,'https://whatever.org/')
     let path = page.pathname.replaceAll("%20"," ")
-    console.log("path = " +path)
 
     if(path == '/'){
         let page = fs.readFileSync("src/test.html")
@@ -65,14 +64,11 @@ let video = (req,res,path) => {
 
 let listFiles = () =>{
     let paths = []
-    console.log(__dirname)
     let dir = fs.readdirSync(require('path').resolve(__dirname, path))
+    console.log("dir = " + dir)
     for(folder of dir){
         try{
             let files =  fs.readdirSync(path+folder)
-            for(let file of files){
-                paths.push(path+folder+"/"+file)
-            }
         }
         catch{
             paths.push(path+folder)

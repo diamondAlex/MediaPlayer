@@ -18,3 +18,7 @@
     padding-left:15px;
     float:left;
 }
+.playing{
+    border:solid;
+    border-color:orange;
+}
