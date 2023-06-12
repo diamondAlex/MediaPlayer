@@ -1,9 +1,14 @@
 {
     "scripts": {
-        "start":"yarn nodemon ./server.js"
+        "start": "yarn nodemon ./server.js",
+        "bg": "pm2 start 'yarn start'",
+        "stop": "pm2 stop default"
     },
     "dependencies": {
         "nodemon": "^2.0.22",
         "serve": "^14.2.0"
+    },
+    "devDependencies": {
+        "pm2": "^5.3.0"
     }
 }

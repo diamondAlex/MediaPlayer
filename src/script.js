@@ -10,7 +10,7 @@ let player = videojs("player")
 player.fill(true)
 player.aspectRatio('20:9')
 player.autoplay(true)
-player.muted(false)
+player.muted(true)
 let split = new Map()
 
 let setPlaying = (url) =>{
@@ -99,6 +99,10 @@ document.addEventListener("keydown", (e) => {
     }
     else if(c==66){
         playPrev()
+    }
+    else if(e.ctrlKey && c==83){
+        e.preventDefault()
+        shuffleList()
     }
     else if(!e.ctrlKey && c==70){
         if(!player.isFullscreen()){
@@ -198,3 +202,24 @@ let playRandom = () => {
         },randDur * 1000)
     })
 }
+
+let expired
+
+let doubleTouch = function (e) {
+    e.preventDefault()
+    if (e.touches.length === 1) {
+        if (!expired) {
+            expired = e.timeStamp + 400
+        } else if (e.timeStamp <= expired) {
+            // remove the default of this event ( Zoom )
+            playNext()
+            // then reset the variable for other "double Touches" event
+            expired = null
+        } else {
+            // if the second touch was expired, make it as it's the first
+            expired = e.timeStamp + 400
+        }
+    }
+}
+
+window.addEventListener("touchstart", doubleTouch)
