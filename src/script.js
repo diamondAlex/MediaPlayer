@@ -17,7 +17,6 @@ let setPlaying = (url) =>{
     let playing = document.getElementById("playing")
     playing.innerHTML = url + "<br>"
     
-    console.log(url)
     player.src({
         type: "video/mp4",
         src: url 
@@ -48,12 +47,10 @@ let playPrev = () =>{
 let playNext = () =>{
     let current = player.lastSource_.player
     let file = fileNames.findIndex((val) => current.includes(val))
-    console.log(file)
     if (file == fileNames.length - 1){
         file =-1 
     }
     let next = fileNames[file+1]
-    console.log(fileNames)
 
 
     setPlaying(url +"/" +  next)
@@ -155,7 +152,6 @@ let setList = (span) => {
 fetchInfo()
 
 function shuffleList(){
-    console.log("in shuffleList")
     let shuffletimes = fileNames.length * 2
     for(i = 0;i < shuffletimes; i++){
         let index = randomIndex()
@@ -195,10 +191,8 @@ let playRandom = () => {
         window.setTimeout(() =>{
             amount--
             if(amount != 0){
-                console.log("2+ in queue") 
             }
             else{
-                console.log("trigger")
                 player.trigger("foo") 
             }
         },randDur * 1000)

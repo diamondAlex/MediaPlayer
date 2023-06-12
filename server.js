@@ -26,8 +26,6 @@ http.createServer(function (req, res) {
     
     }
     else{
-        console.log(__dirname)
-        console.log("src" + path)
         let page = fs.readFileSync("src" + path)
         res.write(page)
         res.end()
@@ -65,7 +63,6 @@ let video = (req,res,path) => {
 let listFiles = () =>{
     let paths = []
     let dir = fs.readdirSync(require('path').resolve(__dirname, path))
-    console.log("dir = " + dir)
     for(folder of dir){
         try{
             let files =  fs.readdirSync(path+folder)
