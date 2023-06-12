@@ -1,0 +1,20 @@
+.container{
+    border:solid;
+    border-color:red;
+    float:left;
+    width:100%;
+}
+
+.one{
+    width:75%;
+    border:solid;
+    float:left;
+}
+.two{
+    width:22%;
+    border:solid;
+    border-color:blue;
+    margin-left:15px;
+    padding-left:15px;
+    float:left;
+}
