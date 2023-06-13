@@ -2,7 +2,8 @@
     "scripts": {
         "start": "yarn nodemon ./server.js",
         "bg": "pm2 start 'yarn start'",
-        "stop": "pm2 stop default"
+        "stop": "pm2 stop default",
+        "mount": "ln -s "
     },
     "dependencies": {
         "nodemon": "^2.0.22",

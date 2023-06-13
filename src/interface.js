@@ -1,5 +1,7 @@
 function spawnInterface(){
+    //contains all components
     let container = document.getElementsByClassName("container")[0]
+
     let div = document.createElement("div") 
     let button1 = document.createElement("button")
     button1.id = "random"
@@ -7,13 +9,16 @@ function spawnInterface(){
     let button2 = document.createElement("button")
     button2.id = "shuffle"
     button2.innerHTML = 'shuffle'
+
+    //terrible naming
     let div2 = document.createElement("div") 
     div2.className = 'two'
     div2.id = 'list_container'
+    //list of files
     let list = document.createElement("div") 
     list.className = 'two'
     list.id = 'list'
-
+    //name of currently playing file
     let playing = document.createElement("p")
     playing.id = "playing"
     playing.classList.add("playing")

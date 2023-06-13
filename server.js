@@ -1,13 +1,11 @@
 var http = require('http');
 var fs = require('fs')
 
-let path = "vods/"
+let vodPath = "vods/"
 
-//create a server object:
 http.createServer(function (req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    let page = new URL(req.url,'https://whatever.org/')
-    let path = page.pathname.replaceAll("%20"," ")
+    let path = req.url.replaceAll("%20"," ")
 
     if(path == '/'){
         let page = fs.readFileSync("src/test.html")
@@ -20,17 +18,14 @@ http.createServer(function (req, res) {
     else if(path == "/files"){
         let files = listFiles()
         let json = JSON.stringify({files:files})
-
         res.write(json)
         res.end(); 
-    
     }
     else{
         let page = fs.readFileSync("src" + path)
         res.write(page)
         res.end()
     }
-
 }).listen(8080, () => console.log("connected on 8080")); //the server object listens on port 8080
 
 let video = (req,res,path) => {
@@ -39,9 +34,10 @@ let video = (req,res,path) => {
         if (!range) {
             res.status = 400
         }
-        let videoPath = require('path').join(__dirname, path)
+        let videoPath = require('path').join(__dirname,vodPath, path)
         let videoSize = fs.statSync(videoPath).size;
         let CHUNK_SIZE = 10 ** 6;
+        //replaces all char that are not digits
         let start = Number(range.replace(/\D/g, ""));
         let end = Math.min(start + CHUNK_SIZE, videoSize - 1);
         let contentLength = end - start + 1;
@@ -62,13 +58,13 @@ let video = (req,res,path) => {
 
 let listFiles = () =>{
     let paths = []
-    let dir = fs.readdirSync(require('path').resolve(__dirname, path))
+    let dir = fs.readdirSync(require('path').resolve(__dirname, vodPath))
     for(folder of dir){
         try{
-            let files =  fs.readdirSync(path+folder)
+            let files =  fs.readdirSync(vodPath+folder)
         }
         catch{
-            paths.push(path+folder)
+            paths.push(folder)
         }
     }
     return paths
