@@ -24,13 +24,16 @@ let randomIndex = () =>{
 }
 
 //----------------------FUNCTIONS ------------------------------
-let setPlaying = (url) =>{
+let setPlaying = (url, time = 0) =>{
     let playing = document.getElementById("playing")
     playing.innerHTML = url.split("/").slice(-1) 
     player.src({
         type: "video/mp4",
         src: url + "/fetch"
     })
+    if(time != 0){
+        player.currentTime(time)
+    }
 }
 
 let playPrev = () =>{
@@ -122,7 +125,6 @@ let updateName = () => {
 let dialogOpen = false
 //creates the list and their listeners
 let setList = () => {
-    console.log('IN HERE')
     let span = document.getElementById("list")         
     span.innerHTML = ""
     for(let line of fileNames){
@@ -170,7 +172,21 @@ function saveClip(){
     let currentPlaying = document.getElementById("playing").innerHTML
     let timestamp = player.currentTime()
     savedClip.push([currentPlaying,timestamp])
-    console.log(savedClip)
+
+    let span = document.getElementById("under")         
+    span.innerHTML = ""
+    for(let line of savedClip){
+        let linkC = document.createElement("p")
+        let link = document.createElement("span")
+        link.addEventListener("click", () => {
+            player.muted(true)
+            setPlaying(url + "/" + line[0], line[1])
+        })
+        link.id = line
+        link.innerHTML = line + " - " 
+        linkC.appendChild(link)
+        span.appendChild(linkC)
+    }
     
 }
 

@@ -32,6 +32,7 @@ function spawnInterface(){
     let slider = document.createElement("div")
     div.innerHTML= `<input type="range" min="1" max="100" value="50" class="slider" id="slider"><p id="randTime"></p>`
 
+
     div.appendChild(dialog)
 
     div2.appendChild(playing)
@@ -41,6 +42,12 @@ function spawnInterface(){
     div.appendChild(slider)
     container.appendChild(div)
     container.appendChild(div2)
+
+    let under = document.createElement("div")
+    under.innerHTML = "TEST"
+    under.id = "under"
+    let vid = document.getElementById("vidplayer")
+    vid.appendChild(under)
 }
 
 spawnInterface()
