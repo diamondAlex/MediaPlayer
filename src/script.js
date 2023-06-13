@@ -97,6 +97,7 @@ let setNewName = () => {
     let dialog = document.getElementById("dialog")
     console.log(newName)
     dialog.close()
+    dialogOpen = false
     updateName()
     console.log("SHOULD BE")
     console.log(fileNames.find((e) => e == newName))
@@ -105,9 +106,7 @@ let setNewName = () => {
 let updateName = () => {
     toName = newName
     fromName = oldName
-    console.log(fromName)
     let index = fileNames.findIndex((e) => e == fromName)
-    console.log(index)
     fileNames[index] = toName
     let body = {
         to:toName,
@@ -119,6 +118,7 @@ let updateName = () => {
     })
 }
 
+let dialogOpen = false
 //creates the list and their listeners
 let setList = () => {
     console.log('IN HERE')
@@ -137,6 +137,7 @@ let setList = () => {
             oldName = line 
             let dialog = document.getElementById("dialog")
             dialog.showModal()
+            dialogOpen = true
         })
         link.id = line
         link.innerHTML = line + " - " 
@@ -197,8 +198,8 @@ document.getElementById("random").addEventListener("click",()=>playRandom())
 document.getElementById("shuffle").addEventListener("click",()=>shuffleList())
 
 document.addEventListener("keydown", (e) => {
+    if(dialogOpen) return
     let c = e.code
-    console.log(c)
     //arrow <-
     if(c=="ArrowLeft"){
         skip(-15);
@@ -207,10 +208,10 @@ document.addEventListener("keydown", (e) => {
     else if(c=="ArrowRight"){
         skip(15);
     }
-    //r GOTTA ADD SOME IN FOCUS CONCEPT
-    //else if(!e.ctrlKey && c=="KeyR"){
-        //playRandom()
-    //}
+    //r 
+    else if(!e.ctrlKey && c=="KeyR"){
+        playRandom()
+    }
     //b
     else if(c=="KeyB"){
         playPrev()
@@ -240,6 +241,10 @@ document.addEventListener("keydown", (e) => {
         player.currentTime(time)
     }
 
+})
+
+document.getElementById("dialog").addEventListener("close", () => {
+    dialogOpen = false
 })
 
 //run

@@ -27,7 +27,6 @@ http.createServer(function (req, res) {
     }
     else if(path == "/files"){
         let files = listFiles()
-        console.log(files)
         let json = JSON.stringify({files:files})
         res.write(json)
         res.end(); 
