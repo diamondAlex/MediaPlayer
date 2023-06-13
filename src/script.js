@@ -172,7 +172,7 @@ document.addEventListener("keydown", (e) => {
         skip(15);
     }
     //r 
-    else if(c=="KeyR"){
+    else if(!e.ctrlKey && c=="KeyR"){
         playRandom()
     }
     //b
