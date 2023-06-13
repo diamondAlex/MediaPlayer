@@ -2,3 +2,4 @@ node_modules/
 vods/*
 vods
 yarn-error.log
+local/

@@ -17,6 +17,14 @@
     padding-left:15px;
     float:left;
 }
+.link_list{
+    width:22%;
+    border:solid;
+    border-color:blue;
+    margin-left:15px;
+    padding-left:15px;
+    float:left;
+}
 .playing{
     border:solid;
     border-color:orange;

@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "start": "yarn nodemon ./server.js",
+        "start": "yarn nodemon --ignore ./local/ ./server.js",
         "bg": "pm2 start 'yarn start'",
         "stop": "pm2 stop default"
     },

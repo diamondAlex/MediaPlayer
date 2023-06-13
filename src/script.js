@@ -29,7 +29,7 @@ let setPlaying = (url) =>{
     playing.innerHTML = url.split("/").slice(-1) + "<br>"
     player.src({
         type: "video/mp4",
-        src: url 
+        src: url + "/fetch"
     })
 }
 
@@ -63,20 +63,13 @@ let playRandom = () => {
         let time = player.duration()
         let randTime = Math.floor(Math.random()*time)
         player.currentTime(randTime)
-
         amount++
-
         player.one('foo', function () {
             playRandom()
         })
-
         window.setTimeout(() =>{
             amount--
-            if(amount != 0){
-            }
-            else{
-                player.trigger("foo") 
-            }
+            if(amount == 0) player.trigger("foo") 
         },RANDOM_DURATION * 1000)
     })
 }
@@ -87,26 +80,69 @@ let fetchInfo = () => {
     })
         .then((ret) => ret.json())
         .then((json) =>{
-            let span = document.getElementById("list")         
-            fileNames = json.files
+            fileNames = Object.keys(json.files)
+            console.log(fileNames)
             vodsAmt = fileNames.length
-            setList(span)
+            setList()
             setPlaying(url + "/" + fileNames[randomIndex()])
     })
 }
 
-let setList = (span) => {
+//this is all abhorrent
+let newName =""
+let oldName =""
+
+let setNewName = () => {
+    newName = document.getElementById("name").value
+    let dialog = document.getElementById("dialog")
+    console.log(newName)
+    dialog.close()
+    updateName()
+    console.log("SHOULD BE")
+    console.log(fileNames.find((e) => e == newName))
+    setList()
+}
+let updateName = () => {
+    toName = newName
+    fromName = oldName
+    console.log(fromName)
+    let index = fileNames.findIndex((e) => e == fromName)
+    console.log(index)
+    fileNames[index] = toName
+    let body = {
+        to:toName,
+        from:fromName
+    }
+    fetch(url+"/updatename",{
+        method:"post",
+        body: JSON.stringify(body) 
+    })
+}
+
+//creates the list and their listeners
+let setList = () => {
+    console.log('IN HERE')
+    let span = document.getElementById("list")         
     span.innerHTML = ""
     for(let line of fileNames){
-        let link = document.createElement("p")
+        let linkC = document.createElement("p")
+        let link = document.createElement("span")
         link.addEventListener("click", () => {
             player.muted(true)
             setPlaying(url + "/" + line)
         })
-
-        link.innerHTML = line
-
-        span.appendChild(link)
+        let edit = document.createElement("button")
+        edit.innerHTML = "edit"
+        edit.addEventListener("click", () =>{
+            oldName = line 
+            let dialog = document.getElementById("dialog")
+            dialog.showModal()
+        })
+        link.id = line
+        link.innerHTML = line + " - " 
+        linkC.appendChild(link)
+        linkC.appendChild(edit)
+        span.appendChild(linkC)
     }
 }
 
@@ -136,7 +172,7 @@ function shuffleList(){
         fileNames[index] = fileNames[index2]
         fileNames[index2] = temp
     }
-    setList(document.getElementById("list")) 
+    setList()
 }
 
 let skip=(time)=>{
@@ -171,10 +207,10 @@ document.addEventListener("keydown", (e) => {
     else if(c=="ArrowRight"){
         skip(15);
     }
-    //r 
-    else if(!e.ctrlKey && c=="KeyR"){
-        playRandom()
-    }
+    //r GOTTA ADD SOME IN FOCUS CONCEPT
+    //else if(!e.ctrlKey && c=="KeyR"){
+        //playRandom()
+    //}
     //b
     else if(c=="KeyB"){
         playPrev()

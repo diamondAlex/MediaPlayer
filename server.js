@@ -1,5 +1,6 @@
 var http = require('http');
-var fs = require('fs')
+var fs = require('fs');
+const { list } = require('pm2');
 
 let vodPath = "vods/"
 
@@ -12,8 +13,19 @@ http.createServer(function (req, res) {
         res.write(page)
         res.end()
     }
-    else if(path.includes(".mp4")){
-        video(req,res,path)
+    else if(path == "/updatename"){
+        req.on('data', (data) => {
+            let json = JSON.parse(data)
+            updateAssociation(json)
+            res.end()
+        })
+    }
+    else if(path.includes("/fetch")){
+        let formattedPath = path.split('/')[1]
+        console.log(formattedPath)
+        let name =  getFromAssociation(formattedPath)
+        console.log(name)
+        video(req,res,name)
     }
     else if(path == "/files"){
         let files = listFiles()
@@ -57,15 +69,65 @@ let video = (req,res,path) => {
 }
 
 let listFiles = () =>{
-    let paths = []
-    let dir = fs.readdirSync(require('path').resolve(__dirname, vodPath))
-    for(folder of dir){
-        try{
-            let files =  fs.readdirSync(vodPath+folder)
+    return getAssociativeList()
+}
+
+let listPath = "./local/association.json"
+//this is awful
+function getAssociativeList(){
+    try{
+        let associations = fs.readFileSync(listPath)
+        if(!associations.toString()){
+            populateList()
+            fs.writeFileSync(listPath, JSON.stringify(associations))
+            getAssociativeList()
+            return
         }
-        catch{
-            paths.push(folder)
+        else{
+            return JSON.parse(associations)
         }
     }
-    return paths
+    catch(err){
+        if(err.errno == -2){
+            let associations = populateList()
+            fs.writeFileSync(listPath, JSON.stringify(associations))
+            //this is mighty dangerous
+            getAssociativeList()
+            return
+        }
+        else{
+            console.log(err)
+        }
+    }
+}
+
+function populateList(){
+    let files = fs.readdirSync(vodPath)
+    let associations = {}
+    for(let file of files){
+        //monstrous
+        try{
+            fs.readdirSync(vodPath + file)
+        }
+        catch(err){
+            associations[file] = file
+        }
+    }
+    return associations
+}
+
+function getFromAssociation(name){
+    let list = getAssociativeList()
+    console.log(list)
+    return list[name]
+}
+
+function updateAssociation(nameInfo){
+    let associations = getAssociativeList()
+    let newName = nameInfo.to
+    let oldName = nameInfo.from
+    let path = associations[oldName]
+    delete associations[oldName]
+    associations[newName] = path
+    fs.writeFileSync(listPath, JSON.stringify(associations))
 }

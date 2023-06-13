@@ -16,12 +16,21 @@ function spawnInterface(){
     div2.id = 'list_container'
     //list of files
     let list = document.createElement("div") 
-    list.className = 'two'
+    list.className = 'links_list'
     list.id = 'list'
     //name of currently playing file
     let playing = document.createElement("p")
     playing.id = "playing"
     playing.classList.add("playing")
+
+    let dialog = document.createElement("dialog")
+    dialog.innerHTML = `
+        <textarea id="name"></textarea>
+        <button id="submitName" onclick="setNewName()">submit</button>
+        `
+    dialog.id = 'dialog'
+
+    div.appendChild(dialog)
 
     div2.appendChild(playing)
     div2.appendChild(list)
