@@ -29,6 +29,8 @@ function spawnInterface(){
         <button id="submitName" onclick="setNewName()">submit</button>
         `
     dialog.id = 'dialog'
+    let slider = document.createElement("div")
+    div.innerHTML= `<input type="range" min="1" max="100" value="50" class="slider" id="slider"><p id="randTime"></p>`
 
     div.appendChild(dialog)
 
@@ -36,6 +38,7 @@ function spawnInterface(){
     div2.appendChild(list)
     div.appendChild(button1)
     div.appendChild(button2)
+    div.appendChild(slider)
     container.appendChild(div)
     container.appendChild(div2)
 }

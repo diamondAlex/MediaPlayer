@@ -1,5 +1,5 @@
 //constants
-const RANDOM_DURATION = 5
+let random_duration = 5
 
 //variables
 let vodsAmt = 0
@@ -26,7 +26,7 @@ let randomIndex = () =>{
 //----------------------FUNCTIONS ------------------------------
 let setPlaying = (url) =>{
     let playing = document.getElementById("playing")
-    playing.innerHTML = url.split("/").slice(-1) + "<br>"
+    playing.innerHTML = url.split("/").slice(-1) 
     player.src({
         type: "video/mp4",
         src: url + "/fetch"
@@ -62,6 +62,7 @@ let playRandom = () => {
     player.one("loadedmetadata", () =>{
         let time = player.duration()
         let randTime = Math.floor(Math.random()*time)
+        console.log(random_duration)
         player.currentTime(randTime)
         amount++
         player.one('foo', function () {
@@ -70,7 +71,7 @@ let playRandom = () => {
         window.setTimeout(() =>{
             amount--
             if(amount == 0) player.trigger("foo") 
-        },RANDOM_DURATION * 1000)
+        },random_duration * 1000)
     })
 }
 
@@ -164,6 +165,15 @@ let doubleTouch = function (e) {
     }
 }
 
+let savedClip = []
+function saveClip(){
+    let currentPlaying = document.getElementById("playing").innerHTML
+    let timestamp = player.currentTime()
+    savedClip.push([currentPlaying,timestamp])
+    console.log(savedClip)
+    
+}
+
 function shuffleList(){
     let shuffletimes = fileNames.length * 2
     for(i = 0;i < shuffletimes; i++){
@@ -200,42 +210,36 @@ document.getElementById("shuffle").addEventListener("click",()=>shuffleList())
 document.addEventListener("keydown", (e) => {
     if(dialogOpen) return
     let c = e.code
-    //arrow <-
     if(c=="ArrowLeft"){
         skip(-15);
     }
-    //arrow ->
     else if(c=="ArrowRight"){
         skip(15);
     }
-    //r 
     else if(!e.ctrlKey && c=="KeyR"){
         playRandom()
     }
-    //b
     else if(c=="KeyB"){
         playPrev()
     }
-    //s
     else if(e.ctrlKey && c=="KeyS"){
         e.preventDefault()
         shuffleList()
     }
-    //n
+    else if(c=="KeyS"){
+        saveClip()
+    }
     else if(c=="KeyN"){
         random ? player.trigger("foo") : playNext()
     }
-    //f
     else if(!e.ctrlKey && c=="KeyF"){
         !player.isFullscreen() ? 
             player.requestFullscreen() : player.exitFullscreen()
     }
-    //space
     else if(c=="Space"){
         e.preventDefault()
         player.paused() ? player.play() : player.pause()
     }
-    //0-9
     else if(c.includes("Digit")){
         let time = split.get(parseInt(c.slice(-1)))
         player.currentTime(time)
@@ -243,6 +247,12 @@ document.addEventListener("keydown", (e) => {
 
 })
 
+document.getElementById("slider").addEventListener("input", () =>{
+    let randP = document.getElementById("randTime")    
+    console.log(slider.value)
+    randP.innerHTML = slider.value
+    random_duration = slider.value
+})
 document.getElementById("dialog").addEventListener("close", () => {
     dialogOpen = false
 })
