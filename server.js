@@ -22,13 +22,12 @@ http.createServer(function (req, res) {
     }
     else if(path.includes("/fetch")){
         let formattedPath = path.split('/')[1]
-        console.log(formattedPath)
-        let name =  getFromAssociation(formattedPath)
-        console.log(name)
+        let name = getFromAssociation(formattedPath)
         video(req,res,name)
     }
     else if(path == "/files"){
         let files = listFiles()
+        console.log(files)
         let json = JSON.stringify({files:files})
         res.write(json)
         res.end(); 
@@ -69,23 +68,21 @@ let video = (req,res,path) => {
 }
 
 let listFiles = () =>{
-    return getAssociativeList()
+    return associationsList
 }
 
-let listPath = "./local/association.json"
+let associationsList
 //this is awful
-function getAssociativeList(){
+async function getAssociativeList(){
     try{
-        let associations = fs.readFileSync(listPath)
+        let associations = await decrypt()
         if(!associations.toString()){
-            populateList()
-            fs.writeFileSync(listPath, JSON.stringify(associations))
+            associations = populateList()
+            await encrypt(JSON.stringify(associations))
             getAssociativeList()
-            return
         }
-        else{
-            return JSON.parse(associations)
-        }
+        associationsList = associations
+        return
     }
     catch(err){
         if(err.errno == -2){
@@ -100,6 +97,7 @@ function getAssociativeList(){
         }
     }
 }
+
 
 function populateList(){
     let files = fs.readdirSync(vodPath)
@@ -117,9 +115,7 @@ function populateList(){
 }
 
 function getFromAssociation(name){
-    let list = getAssociativeList()
-    console.log(list)
-    return list[name]
+    return associationsList[name]
 }
 
 function updateAssociation(nameInfo){
@@ -129,5 +125,67 @@ function updateAssociation(nameInfo){
     let path = associations[oldName]
     delete associations[oldName]
     associations[newName] = path
-    fs.writeFileSync(listPath, JSON.stringify(associations))
+    encrypt(JSON.stringify(associations))
 }
+
+const {
+    createReadStream,
+    createWriteStream,
+    readFileSync
+} = require('node:fs');
+
+const {
+    pipeline,
+} = require('node:stream/promises');
+const {
+    Readable
+} = require('node:stream');
+
+const {
+    createCipheriv,
+    createDecipheriv,
+} = require('node:crypto');
+
+const algorithm = 'aes-192-cbc';
+
+let encrypt = async (content) => {
+    // Then, we'll generate a random initialization vector
+    let iv = readFileSync("local/test.iv")
+    let key = readFileSync("local/test.key")
+
+    let cipher = createCipheriv(algorithm, key, iv);
+
+    let input = Readable.from(content)
+    let output = createWriteStream('local/association.json');
+
+    await pipeline(input, cipher, output)
+
+}
+
+//this is getting silly
+let decrypt = async () => {
+    if(!fs.existsSync("local/association.json")){
+        return "" 
+    }
+    let iv = readFileSync("local/test.iv")
+    let key = readFileSync("local/test.key")
+
+    let decipher = createDecipheriv(algorithm, key, iv);
+
+    input = createReadStream('local/association.json');
+    let str = ""
+    let prom = new Promise((resolve) => {
+        decipher.on("data", (data) =>{
+            str = str + data
+        })
+        decipher.on("end", () =>{
+            resolve(JSON.parse(str))
+        })
+    })
+
+    input.pipe(decipher)
+    
+    return prom
+}
+
+getAssociativeList()
