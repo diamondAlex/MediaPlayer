@@ -78,6 +78,7 @@ function createVideoSection(){
         </video>
     `
     let underVid = document.createElement("div")
+    underVid.className = "splash-under"
     underVid.id = "under"
 
     vid.appendChild(underVid)

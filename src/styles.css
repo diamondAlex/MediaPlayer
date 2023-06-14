@@ -142,6 +142,15 @@ label {
     overflow-y:scroll;
     overflow-x:hidden;
 }
+.splash-under {
+    color: white;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+    font-size:140%;
+    height:25%;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
 
 .splash-head {
     padding:2px;

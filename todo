@@ -1,9 +1,3 @@
-adding too many saves doesn't cause the scroller to appear
-rename file from page
-add a slider to select the length of random clips
-redo all.
 shouldn't zoom on double click
-add a clipping utility, where you can save a shown random clip to a list
-need saved clips to persist
+need saved clips to persist and have a way to delete from list
 currently can't add new files as the association list doesn't update
-I need a good way to stop random from running once some other link is clicked
