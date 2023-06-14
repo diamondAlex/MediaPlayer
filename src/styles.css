@@ -138,6 +138,9 @@ label {
     letter-spacing: 0.05em;
     opacity: 0.8;
     font-size:140%;
+    height:90%;
+    overflow-y:scroll;
+    overflow-x:hidden;
 }
 
 .splash-head {
@@ -145,6 +148,6 @@ label {
     color: white;
     letter-spacing: 0.05em;
     opacity: 0.8;
-    font-size:160%;
+    font-size:150%;
 }
 

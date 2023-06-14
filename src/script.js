@@ -13,7 +13,6 @@ let amount = 0
 let split = new Map()
 
 //used to communicate names with dialog box
-let newName =""
 let currentName =""
 let dialogOpen = false
 
@@ -111,17 +110,23 @@ let fetchInfo = () => {
     })
 }
 
-let updateName = () => {
+let updateName = (value) => {
+    console.log("VALUE = " + value)
     let index = fileNames.findIndex((e) => e == currentName)
-    fileNames[index] = newName
+    fileNames[index] = value
     let body = {
-        to:newName,
+        to:value,
         from:currentName
     }
     fetch(url+"/updatename",{
         method:"post",
         body: JSON.stringify(body) 
     })
+    setList()
+    let dialog = document.getElementById("dialog")
+    let text = document.getElementById("dialogName")
+    text.value = ""
+    dialog.close()
 }
 
 //creates the list and their listeners
@@ -262,7 +267,20 @@ document.addEventListener("keydown", (e) => {
 
 })
 
-document.getElementById("submitName").addEventListener("click", updateName)
+//for eventual editing of current playing
+//document.getElementById("edithead").addEventListener("click", () => {
+    //let header = document.getElementById("playing")
+    //let name = header.innerHTML
+    //currentName = name
+    //let dialog = document.getElementById("dialog")
+    //dialog.showModal()
+    //dialogOpen = true
+//})
+
+document.getElementById("submitName").addEventListener("click", (e) => {
+    let value = document.getElementById("dialogName").value
+    updateName(value)
+})
 
 document.getElementById("slider").addEventListener("input", () =>{
     let slider = document.getElementById("slider")

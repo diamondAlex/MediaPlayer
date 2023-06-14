@@ -5,7 +5,7 @@ container.className = "splash-container"
 function createPopupDialog(){
     let dialog = document.createElement("dialog")
     dialog.innerHTML = `
-        <textarea id="name"></textarea>
+        <textarea id="dialogName"></textarea>
         <button id="submitName">submit</button>
         `
     dialog.id = 'dialog'
@@ -23,11 +23,19 @@ function createList(){
     list.className = 'links_list'
     list.id = 'list'
     //name of currently playing file
-    let playing = document.createElement("p")
+    let playDiv = document.createElement("div")
+    let playing = document.createElement("div")
     playing.id = "playing"
     playing.classList.add("playing","splash-head")
+    //WILL NEED TO FIX THIS
+    //let button1 = document.createElement("button")
+    //button1.id = "edithead"
+    //button1.innerHTML = 'edit'
+    //button1.className = "edit"
+    //playDiv.appendChild(button1)
 
-    listDiv.appendChild(playing)
+    playDiv.appendChild(playing)
+    listDiv.appendChild(playDiv)
     listDiv.appendChild(list)
 
     container.appendChild(listDiv)
