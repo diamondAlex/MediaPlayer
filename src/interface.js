@@ -1,5 +1,6 @@
 //contains all components
 let container = document.getElementsByClassName("container")[0]
+container.className = "splash-container"
 
 function createPopupDialog(){
     let dialog = document.createElement("dialog")
@@ -15,7 +16,7 @@ function createPopupDialog(){
 function createList(){
     //terrible naming
     let listDiv = document.createElement("div") 
-    listDiv.className = 'right'
+    listDiv.classList.add('right','splash-subhead')
     listDiv.id = 'list_container'
     //list of files
     let list = document.createElement("div") 
@@ -24,7 +25,7 @@ function createList(){
     //name of currently playing file
     let playing = document.createElement("p")
     playing.id = "playing"
-    playing.classList.add("playing")
+    playing.classList.add("playing","splash-head")
 
     listDiv.appendChild(playing)
     listDiv.appendChild(list)
@@ -34,17 +35,20 @@ function createList(){
 
 function createButton(){
     let buttonDiv = document.createElement("div") 
+    buttonDiv.className = "right"
     let button1 = document.createElement("button")
     button1.id = "random"
     button1.innerHTML = 'random'
+    button1.className = "pure-button"
 
     let button2 = document.createElement("button")
     button2.id = "shuffle"
     button2.innerHTML = 'shuffle'
+    button2.className = "pure-button"
 
     //sets the random clip duration
     let slider = document.createElement("div")
-    slider.innerHTML= `<input type="range" min="1" max="100" value="50" class="slider" id="slider"><p id="randTime"></p>`
+    slider.innerHTML= `<input type="range" min="1" max="100" value="50" class="slider" id="slider"><span id="randTime"> 50 </span>`
 
     buttonDiv.appendChild(button1)
     buttonDiv.appendChild(button2)
@@ -66,7 +70,6 @@ function createVideoSection(){
         </video>
     `
     let underVid = document.createElement("div")
-    underVid.innerHTML = "TEST"
     underVid.id = "under"
 
     vid.appendChild(underVid)

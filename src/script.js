@@ -137,6 +137,7 @@ let setList = () => {
         })
         let edit = document.createElement("button")
         edit.innerHTML = "edit"
+        edit.classList = "edit"
         edit.addEventListener("click", () =>{
             currentName = line 
             let dialog = document.getElementById("dialog")

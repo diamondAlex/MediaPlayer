@@ -1,31 +1,150 @@
+/*https://github.com/pure-css/pure/blob/master/site/static/layouts/marketing/styles.css */
 .container{
-    border:solid;
-    border-color:red;
+    /*border:solid;*/
+    /*border-color:red;*/
     float:left;
     width:100%;
 }
 .left{
+    /*border:solid;*/
+    /*border-color:yellow;*/
+    padding-top:10px;
     width:75%;
-    border:solid;
     float:left;
 }
 .right{
+    /*border:solid;*/
+    /*border-color:blue;*/
     width:22%;
-    border:solid;
-    border-color:blue;
     margin-left:15px;
     padding-left:15px;
     float:left;
 }
 .link_list{
+    /*border:solid;*/
+    /*border-color:blue;*/
     width:22%;
-    border:solid;
-    border-color:blue;
     margin-left:15px;
     padding-left:15px;
     float:left;
 }
 .playing{
-    border:solid;
-    border-color:orange;
+    /*border:solid;*/
+    /*border-color:orange;*/
 }
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/*
+ * -- BASE STYLES --
+ * Most of these are inherited from Base, but I want to change a few.
+ */
+body {
+    line-height: 1.7em;
+    color: white;
+    font-size: 13px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label {
+    color: #34495e;
+}
+
+.l-box {
+    padding: 1em;
+}
+
+.l-box-lrg {
+    padding: 2em;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.is-center {
+    text-align: center;
+}
+
+
+/*
+ * -- PURE BUTTON STYLES --
+ * I want my pure-button elements to look a little different
+ */
+.pure-button {
+    background-color: #1f8dd6;
+    color: white;
+    padding: 0.5em 2em;
+    border-radius: 5px;
+}
+
+.edit {
+    float:right;
+    background: white;
+    color: #1f8dd6;
+    border-radius: 5px;
+}
+
+
+/*
+ * -- SPLASH STYLES --
+ * This is the blue top section that appears on the page.
+ */
+
+.splash-container {
+    background: #1f8dd6;
+    z-index: 1;
+    overflow: hidden;
+    /* The following styles are required for the "scroll-over" effect */
+    width: 100%;
+    height: 100%;
+    padding-left:10px;
+    top: 0;
+    left: 0;
+    position: fixed !important;
+}
+
+.splash {
+    /* absolute center .splash within .splash-container */
+    width: 80%;
+    height: 50%;
+    margin: auto;
+    position: absolute;
+    top: 100px; left: 0; bottom: 0; right: 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/* This is the main heading that appears on the blue section */
+.splash-head {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    border: 3px solid white;
+    padding: 1em 1.6em;
+    font-weight: 100;
+    border-radius: 5px;
+    line-height: 1em;
+}
+
+/* This is the subheading that appears on the blue section */
+.splash-subhead {
+    color: white;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+    font-size:140%;
+}
+
+.splash-head {
+    padding:2px;
+    color: white;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+    font-size:160%;
+}
+
