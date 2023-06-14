@@ -4,12 +4,20 @@ let random_duration = 5
 //variables
 let vodsAmt = 0
 let url = window.location.origin
-let inFocus = false
 let fileNames = []
 let expired
-let random = 0
+//limits the timeouts launched by random
+let random_flag = 0
 let amount = 0
+
 let split = new Map()
+
+//used to communicate names with dialog box
+let newName =""
+let currentName =""
+let dialogOpen = false
+
+let inFocus = false
 
 //player 
 let player = videojs("player")
@@ -58,22 +66,34 @@ let playNext = () =>{
     player.play()
 }
 
-let playRandom = () => {
-    random = 1
+//the click arg will stop random if button or KeyR clicked
+let playRandom = (click) => {
+    if(!random_flag && click){
+        let button = document.getElementById("random") 
+        button.style.backgroundColor = "green"
+        random_flag = 1
+    }
+    else if(click){
+        let button = document.getElementById("random") 
+        button.style.backgroundColor = "red"
+        random_flag = 0
+        return
+    }
+    if(!random_flag) return
     let id = Math.floor(Math.random()*fileNames.length)
     setPlaying(url+ "/" + fileNames[id])
     player.one("loadedmetadata", () =>{
+        console.log(random_duration)
         let time = player.duration()
         let randTime = Math.floor(Math.random()*time)
-        console.log(random_duration)
         player.currentTime(randTime)
         amount++
-        player.one('foo', function () {
+        player.one('next', function () {
             playRandom()
         })
         window.setTimeout(() =>{
             amount--
-            if(amount == 0) player.trigger("foo") 
+            if(amount == 0) player.trigger("next") 
         },random_duration * 1000)
     })
 }
@@ -85,36 +105,18 @@ let fetchInfo = () => {
         .then((ret) => ret.json())
         .then((json) =>{
             fileNames = Object.keys(json.files)
-            console.log(fileNames)
             vodsAmt = fileNames.length
             setList()
             setPlaying(url + "/" + fileNames[randomIndex()])
     })
 }
 
-//this is all abhorrent
-let newName =""
-let oldName =""
-
-let setNewName = () => {
-    newName = document.getElementById("name").value
-    let dialog = document.getElementById("dialog")
-    console.log(newName)
-    dialog.close()
-    dialogOpen = false
-    updateName()
-    console.log("SHOULD BE")
-    console.log(fileNames.find((e) => e == newName))
-    setList()
-}
 let updateName = () => {
-    toName = newName
-    fromName = oldName
-    let index = fileNames.findIndex((e) => e == fromName)
-    fileNames[index] = toName
+    let index = fileNames.findIndex((e) => e == currentName)
+    fileNames[index] = newName
     let body = {
-        to:toName,
-        from:fromName
+        to:newName,
+        from:currentName
     }
     fetch(url+"/updatename",{
         method:"post",
@@ -122,7 +124,6 @@ let updateName = () => {
     })
 }
 
-let dialogOpen = false
 //creates the list and their listeners
 let setList = () => {
     let span = document.getElementById("list")         
@@ -137,7 +138,7 @@ let setList = () => {
         let edit = document.createElement("button")
         edit.innerHTML = "edit"
         edit.addEventListener("click", () =>{
-            oldName = line 
+            currentName = line 
             let dialog = document.getElementById("dialog")
             dialog.showModal()
             dialogOpen = true
@@ -176,26 +177,22 @@ function saveClip(){
     let span = document.getElementById("under")         
     span.innerHTML = ""
     for(let line of savedClip){
-        let linkC = document.createElement("p")
-        let link = document.createElement("span")
+        let link = document.createElement("p")
         link.addEventListener("click", () => {
-            player.muted(true)
             setPlaying(url + "/" + line[0], line[1])
         })
-        link.id = line
-        link.innerHTML = line + " - " 
-        linkC.appendChild(link)
-        span.appendChild(linkC)
+        link.innerHTML = line[0] + " - " + line[1]
+        span.appendChild(link)
     }
     
 }
 
 function shuffleList(){
     let shuffletimes = fileNames.length * 2
-    for(i = 0;i < shuffletimes; i++){
+    for(let i = 0;i < shuffletimes; i++){
         let index = randomIndex()
         let index2 = randomIndex()
-        temp = fileNames[index]
+        let temp = fileNames[index]
         fileNames[index] = fileNames[index2]
         fileNames[index2] = temp
     }
@@ -209,18 +206,19 @@ let skip=(time)=>{
 //----------------------EVENTS-------------------------------
 player.on("loadedmetadata", () => {
     let time = player.duration()
-    for(i =0; i <=9;i++){
+    for(let i =0; i <=9;i++){
         split.set(i,time*i/10)
     }
 })
 
 player.on("ended", () => playNext())
+//for later use
 player.on("mouseover", () => inFocus = true)
 player.on("mouseleave", () => inFocus = false)
 
 window.addEventListener("touchstart", doubleTouch)
 
-document.getElementById("random").addEventListener("click",()=>playRandom())
+document.getElementById("random").addEventListener("click",()=>playRandom(1))
 document.getElementById("shuffle").addEventListener("click",()=>shuffleList())
 
 document.addEventListener("keydown", (e) => {
@@ -233,7 +231,7 @@ document.addEventListener("keydown", (e) => {
         skip(15);
     }
     else if(!e.ctrlKey && c=="KeyR"){
-        playRandom()
+        playRandom(1)
     }
     else if(c=="KeyB"){
         playPrev()
@@ -246,7 +244,7 @@ document.addEventListener("keydown", (e) => {
         saveClip()
     }
     else if(c=="KeyN"){
-        random ? player.trigger("foo") : playNext()
+        random_flag ? player.trigger("next") : playNext()
     }
     else if(!e.ctrlKey && c=="KeyF"){
         !player.isFullscreen() ? 
@@ -263,9 +261,11 @@ document.addEventListener("keydown", (e) => {
 
 })
 
+document.getElementById("submitName").addEventListener("click", updateName)
+
 document.getElementById("slider").addEventListener("input", () =>{
+    let slider = document.getElementById("slider")
     let randP = document.getElementById("randTime")    
-    console.log(slider.value)
     randP.innerHTML = slider.value
     random_duration = slider.value
 })

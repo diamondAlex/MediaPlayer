@@ -4,12 +4,12 @@
     float:left;
     width:100%;
 }
-.one{
+.left{
     width:75%;
     border:solid;
     float:left;
 }
-.two{
+.right{
     width:22%;
     border:solid;
     border-color:blue;
