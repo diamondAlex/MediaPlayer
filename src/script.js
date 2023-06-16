@@ -1,7 +1,8 @@
 //constants
 let random_duration = 5
 
-//variables
+/*--------------variables ----------------------- */
+
 let vodsAmt = 0
 let url = window.location.origin
 let fileNames = []
@@ -17,6 +18,10 @@ let currentName =""
 let dialogOpen = false
 
 let inFocus = false
+
+let savedClip = []
+
+/*------------------------------------------ */
 
 //player 
 let player = videojs("player")
@@ -174,7 +179,16 @@ let doubleTouch = function (e) {
     }
 }
 
-let savedClip = []
+function timestampToTime(timestamp){
+    let seconds = Math.floor(timestamp % 60)
+    seconds = seconds < 10 ? seconds.toString().padStart(2,"0") : seconds.toString();
+    let minutes = Math.floor(timestamp/60)
+    minutes = minutes < 10 ? minutes.toString().padStart(2,"0") : minutes.toString();
+    let hours = Math.floor(timestamp/(60*60))
+    hours = hours < 10 ? hours.toString().padStart(2,"0") : hours.toString();
+    return hours + ":" + minutes + ":" + seconds
+}
+
 function saveClip(){
     let currentPlaying = document.getElementById("playing").innerHTML
     let timestamp = player.currentTime()
@@ -187,7 +201,7 @@ function saveClip(){
         link.addEventListener("click", () => {
             setPlaying(url + "/" + line[0], line[1])
         })
-        link.innerHTML = line[0] + " - " + line[1]
+        link.innerHTML = line[0] + " - " + timestampToTime(line[1])
         span.appendChild(link)
     }
     
@@ -226,6 +240,7 @@ window.addEventListener("touchstart", doubleTouch)
 
 document.getElementById("random").addEventListener("click",()=>playRandom(1))
 document.getElementById("shuffle").addEventListener("click",()=>shuffleList())
+document.getElementById("save").addEventListener("click",()=>saveClip())
 
 document.addEventListener("keydown", (e) => {
     if(dialogOpen) return

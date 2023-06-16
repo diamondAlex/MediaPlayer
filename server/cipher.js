@@ -40,12 +40,22 @@ function populateList(){
     for(let file of files){
         //monstrous
         try{
-            fs.readdirSync(vodPath + file)
+            let subpath = vodPath + file
+            let subFiles = fs.readdirSync(subpath)
+            for(let subfile of subFiles){
+                try{
+                    let folder = fs.readdirSync(subpath + subfile)
+                }
+                catch(err){
+                    associations[subfile] = file+"/"+subfile
+                }
+            }
         }
         catch(err){
             associations[file] = file
         }
     }
+    console.log(associations)
     return associations
 }
 

@@ -54,12 +54,18 @@ function createButton(){
     button2.innerHTML = 'shuffle'
     button2.className = "pure-button"
 
+    let button3 = document.createElement("button")
+    button3.id = "save"
+    button3.innerHTML = 'save'
+    button3.className = "pure-button"
+
     //sets the random clip duration
     let slider = document.createElement("div")
     slider.innerHTML= `<input type="range" min="1" max="100" value="50" class="slider" id="slider"><span id="randTime"> 50 </span>`
 
     buttonDiv.appendChild(button1)
     buttonDiv.appendChild(button2)
+    buttonDiv.appendChild(button3)
     buttonDiv.appendChild(slider)
 
     container.appendChild(buttonDiv)
@@ -77,10 +83,18 @@ function createVideoSection(){
             data-setup='{}'>
         </video>
     `
+    //need to be renamed to some saving specific name
     let underVid = document.createElement("div")
     underVid.className = "splash-under"
-    underVid.id = "under"
+    let p = document.createElement("p")
+    p.innerHTML = "Saved:"
+    p.className="splash-underhead"
+    let underList = document.createElement("div")
+    underList.className = "splash-underlist"
+    underList.id = "under"
 
+    underVid.appendChild(p)
+    underVid.appendChild(underList)
     vid.appendChild(underVid)
     container.append(vid)
 }

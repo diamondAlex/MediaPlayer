@@ -123,13 +123,14 @@ label {
 /* This is the main heading that appears on the blue section */
 .splash-head {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 100;
+    line-height: 1em;
     color: white;
     border: 3px solid white;
-    padding: 1em 1.6em;
-    font-weight: 100;
     border-radius: 5px;
-    line-height: 1em;
+    padding:5px;
+    letter-spacing: 0.05em;
+    font-size:150%;
 }
 
 /* This is the subheading that appears on the blue section */
@@ -143,20 +144,31 @@ label {
     overflow-x:hidden;
 }
 .splash-under {
+    margin:0.5em;
+    padding-left:1.5em;
     color: white;
     letter-spacing: 0.05em;
     opacity: 0.8;
     font-size:140%;
     height:25%;
-    overflow-y:scroll;
-    overflow-x:hidden;
 }
 
-.splash-head {
-    padding:2px;
+.splash-underhead {
     color: white;
     letter-spacing: 0.05em;
     opacity: 0.8;
-    font-size:150%;
+    font-size:140%;
+    height:10%;
 }
-
+.splash-underlist {
+    margin:0.5em;
+    margin-left:0em;
+    padding-left:1.5em;
+    color: white;
+    letter-spacing: 0.05em;
+    height:75%;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    border: 1px solid white;
+    border-radius: 4px;
+}

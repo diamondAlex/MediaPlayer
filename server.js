@@ -21,7 +21,6 @@ http.createServer(function (req, res) {
     else if(path == "/updatename"){
         req.on('data', (data) => {
             let json = JSON.parse(data)
-            console.log(data)
             updateAssociation(json)
             res.end()
         })

@@ -1,3 +1,6 @@
+find the best way to add files while program is running
+make sure you can read files in subfolder (just restrict it to .mp4 files)
 shouldn't zoom on double click
 need saved clips to persist and have a way to delete from list
 currently can't add new files as the association list doesn't update
+make a button to switch between filelist and savedlist
