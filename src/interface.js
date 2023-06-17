@@ -19,6 +19,10 @@ function createList(){
     listDiv.classList.add('right','splash-subhead')
     listDiv.id = 'list_container'
     //list of files
+    let search = document.createElement("textarea") 
+    search.className = 'links_list'
+    search.id = 'search'
+    //list of files
     let list = document.createElement("div") 
     list.className = 'links_list'
     list.id = 'list'
@@ -36,6 +40,7 @@ function createList(){
 
     playDiv.appendChild(playing)
     listDiv.appendChild(playDiv)
+    listDiv.appendChild(search)
     listDiv.appendChild(list)
 
     container.appendChild(listDiv)

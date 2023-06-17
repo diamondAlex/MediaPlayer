@@ -21,6 +21,8 @@ let inFocus = false
 
 let savedClip = []
 
+let searchTerm = ""
+
 /*------------------------------------------ */
 
 //player 
@@ -156,8 +158,14 @@ let setList = () => {
         })
         link.id = line
         link.innerHTML = line + " - " 
-        linkC.appendChild(link)
-        linkC.appendChild(edit)
+        if(searchTerm == ""){
+            linkC.appendChild(link)
+            linkC.appendChild(edit)
+        }
+        else if(link.id.toLowerCase().includes(searchTerm.toLowerCase())){
+            linkC.appendChild(link)
+            linkC.appendChild(edit)
+        }
         span.appendChild(linkC)
     }
 }
@@ -244,6 +252,7 @@ document.getElementById("save").addEventListener("click",()=>saveClip())
 
 document.addEventListener("keydown", (e) => {
     if(dialogOpen) return
+    if(document.activeElement.id == 'search') return
     let c = e.code
     if(c=="ArrowLeft"){
         skip(-15);
@@ -305,6 +314,11 @@ document.getElementById("slider").addEventListener("input", () =>{
 })
 document.getElementById("dialog").addEventListener("close", () => {
     dialogOpen = false
+})
+
+document.getElementById("search").addEventListener("input", (e) => {
+    searchTerm = e.target.value
+    setList()
 })
 
 //run
