@@ -177,7 +177,12 @@ let doubleTouch = function (e) {
             expired = e.timeStamp + 400
         } else if (e.timeStamp <= expired) {
             // remove the default of this event ( Zoom )
-            playNext()
+            if(random_flag){
+                playRandom()
+            }
+            else{
+                playNext()
+            }
             // then reset the variable for other "double Touches" event
             expired = null
         } else {
