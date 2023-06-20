@@ -171,20 +171,24 @@ let setList = () => {
 }
 
 let doubleTouch = function (e) {
-    e.preventDefault()
     if (e.touches.length === 1) {
         if (!expired) {
             expired = e.timeStamp + 400
         } else if (e.timeStamp <= expired) {
-            // remove the default of this event ( Zoom )
+            e.preventDefault()
+            // only next if double click player
+            if(!e.target.playerId){
+                expired = null
+                return    
+            }
             if(random_flag){
                 playRandom()
             }
             else{
                 playNext()
             }
-            // then reset the variable for other "double Touches" event
             expired = null
+            // then reset the variable for other "double Touches" event
         } else {
             // if the second touch was expired, make it as it's the first
             expired = e.timeStamp + 400

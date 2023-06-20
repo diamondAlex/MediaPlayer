@@ -1,3 +1,4 @@
+reimplement normal list fetching, and put the ciphering in a seperate branch
 find the best way to add files while program is running
 make sure you can read files in subfolder (just restrict it to .mp4 files)
 shouldn't zoom on double click
