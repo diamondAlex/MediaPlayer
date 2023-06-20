@@ -1,16 +1,8 @@
 const http = require('http');
+const path = require('path');
 const fs = require('fs');
-let { 
-    updateAssociation, 
-    getFromAssociation, 
-    getList
-} = require('./server/cipher')
 
-let vodPath = "vods/"
-
-console.log('test')
-console.log('test')
-
+let vodPath = "vods"
 
 http.createServer(function (req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,16 +13,8 @@ http.createServer(function (req, res) {
         res.write(page)
         res.end()
     }
-    else if(path == "/updatename"){
-        req.on('data', (data) => {
-            let json = JSON.parse(data)
-            updateAssociation(json)
-            res.end()
-        })
-    }
     else if(path.includes("/fetch")){
-        let formattedPath = path.split('/')[1]
-        let name = getFromAssociation(formattedPath)
+        let name = getList()[path.split('/')[1]]
         video(req,res,name)
     }
     else if(path == "/files"){
@@ -73,3 +57,26 @@ let video = (req,res,path) => {
         console.log(err)
     }
 }
+
+let getList = () => {
+    let fileList = {}
+    let folders = fs.readdirSync(vodPath)
+
+    while(folders.length != 0){
+        let currentPath = folders.pop()
+        try{
+            let files = fs.readdirSync(path.join(vodPath,currentPath))
+            for(let file of files){
+                file = currentPath + '/' + file
+                folders.push(file)
+            }
+        }
+        catch(err){
+            let filename = currentPath.split('/').slice(-1)[0] 
+            fileList[filename] = currentPath                 
+        }
+    }
+
+    return fileList
+}
+

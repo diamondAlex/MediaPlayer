@@ -1,9 +1,6 @@
-reimplement normal list fetching, and put the ciphering in a seperate branch
-find the best way to add files while program is running
-make sure you can read files in subfolder (just restrict it to .mp4 files)
-shouldn't zoom on double click
+playlists look fine so far.... BUT TO BE CONTINUED
+make a playlist tree with the subfolders of vods
+playlists don't update themselves at the same time as links
 need saved clips to persist and have a way to delete from list
-currently can't add new files as the association list doesn't update
-use subfolders of vods/ to make playlists
-make a button to switch between filelist and savedlist, so you  can have saved clips as a playlists
-add a way to both save clips and just timestamp? Maybe saved clips and timestamps go in different lists?
+random times are clunky, it takes one extra random to adjust itself to the proper time
+The call cycle when loading the page isn't great since we fetch the list, then setplaying, which then refetches the list

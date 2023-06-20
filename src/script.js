@@ -6,16 +6,15 @@ let random_duration = 5
 let vodsAmt = 0
 let url = window.location.origin
 let fileNames = []
+let pathNames = {}
+let playlists = []
+let currentPlaylist = ""
 let expired
 //limits the timeouts launched by random
 let random_flag = 0
 let amount = 0
 
 let split = new Map()
-
-//used to communicate names with dialog box
-let currentName =""
-let dialogOpen = false
 
 let inFocus = false
 
@@ -38,9 +37,64 @@ let randomIndex = () =>{
 }
 
 //----------------------FUNCTIONS ------------------------------
+
+let setCurrentPlaylist = () =>{
+    document.getElementById("pp_value").innerHTML = currentPlaylist
+    let newFileNames = []
+    console.log(pathNames)
+    for(let file of Object.values(pathNames)){
+        let path = file.split('/').slice(0,-1).join('/')
+        let fileName = file.split('/').slice(-1)[0]
+        if(path === currentPlaylist){
+            console.log(file)
+            newFileNames.push(fileName)
+        }
+    }
+    fileNames = newFileNames
+    setList()
+}
+
+let setPlaylistArray = () => {
+    let paths = Object.values(pathNames)
+    paths.forEach((e) => {
+        let path = e.split('/').slice(0,-1).join('/')
+
+        if(!playlists.includes(path)){
+            playlists.push(path) 
+        }
+    })
+    if(currentPlaylist == ""){
+        currentPlaylist = playlists[0]
+        setCurrentPlaylist()
+    }
+}
+
+let updateFileList = () => {
+    fetch(url+"/files",{
+        method:"GET",
+    })
+        .then((ret) => ret.json())
+        .then((json) =>{
+            pathNames= json.files
+            let newFileNames = Object.keys(pathNames)
+            reorderList(newFileNames)
+            vodsAmt = fileNames.length
+            setPlaylistArray()
+    })
+}
+
+let reorderList = (list) => {
+    for(let entry of list){
+        !fileNames.includes(entry) ? fileNames.push(entry) : false;
+    }
+    fileNames = fileNames.filter((e) => list.includes(e))
+}
+    
+
 let setPlaying = (url, time = 0) =>{
     let playing = document.getElementById("playing")
     playing.innerHTML = url.split("/").slice(-1) 
+    console.log(url)
     player.src({
         type: "video/mp4",
         src: url + "/fetch"
@@ -48,6 +102,7 @@ let setPlaying = (url, time = 0) =>{
     if(time != 0){
         player.currentTime(time)
     }
+    updateFileList()
 }
 
 let playPrev = () =>{
@@ -89,7 +144,6 @@ let playRandom = (click) => {
     let id = Math.floor(Math.random()*fileNames.length)
     setPlaying(url+ "/" + fileNames[id])
     player.one("loadedmetadata", () =>{
-        console.log(random_duration)
         let time = player.duration()
         let randTime = Math.floor(Math.random()*time)
         player.currentTime(randTime)
@@ -110,63 +164,32 @@ let fetchInfo = () => {
     })
         .then((ret) => ret.json())
         .then((json) =>{
-            fileNames = Object.keys(json.files)
+            pathNames= json.files
+            fileNames = Object.keys(pathNames)
             vodsAmt = fileNames.length
             setList()
             setPlaying(url + "/" + fileNames[randomIndex()])
     })
 }
 
-let updateName = (value) => {
-    console.log("VALUE = " + value)
-    let index = fileNames.findIndex((e) => e == currentName)
-    fileNames[index] = value
-    let body = {
-        to:value,
-        from:currentName
-    }
-    fetch(url+"/updatename",{
-        method:"post",
-        body: JSON.stringify(body) 
-    })
-    setList()
-    let dialog = document.getElementById("dialog")
-    let text = document.getElementById("dialogName")
-    text.value = ""
-    dialog.close()
-}
-
 //creates the list and their listeners
 let setList = () => {
     let span = document.getElementById("list")         
     span.innerHTML = ""
-    for(let line of fileNames){
-        let linkC = document.createElement("p")
-        let link = document.createElement("span")
+    for(let line of Object.values(fileNames)){
+        let link = document.createElement("p")
         link.addEventListener("click", () => {
             player.muted(true)
             setPlaying(url + "/" + line)
         })
-        let edit = document.createElement("button")
-        edit.innerHTML = "edit"
-        edit.classList = "edit"
-        edit.addEventListener("click", () =>{
-            currentName = line 
-            let dialog = document.getElementById("dialog")
-            dialog.showModal()
-            dialogOpen = true
-        })
         link.id = line
-        link.innerHTML = line + " - " 
+        link.innerHTML = line 
         if(searchTerm == ""){
-            linkC.appendChild(link)
-            linkC.appendChild(edit)
+            span.appendChild(link)
         }
         else if(link.id.toLowerCase().includes(searchTerm.toLowerCase())){
-            linkC.appendChild(link)
-            linkC.appendChild(edit)
+            span.appendChild(link)
         }
-        span.appendChild(linkC)
     }
 }
 
@@ -260,7 +283,6 @@ document.getElementById("shuffle").addEventListener("click",()=>shuffleList())
 document.getElementById("save").addEventListener("click",()=>saveClip())
 
 document.addEventListener("keydown", (e) => {
-    if(dialogOpen) return
     if(document.activeElement.id == 'search') return
     let c = e.code
     if(c=="ArrowLeft"){
@@ -300,34 +322,41 @@ document.addEventListener("keydown", (e) => {
 
 })
 
-//for eventual editing of current playing
-//document.getElementById("edithead").addEventListener("click", () => {
-    //let header = document.getElementById("playing")
-    //let name = header.innerHTML
-    //currentName = name
-    //let dialog = document.getElementById("dialog")
-    //dialog.showModal()
-    //dialogOpen = true
-//})
-
-document.getElementById("submitName").addEventListener("click", (e) => {
-    let value = document.getElementById("dialogName").value
-    updateName(value)
-})
-
 document.getElementById("slider").addEventListener("input", () =>{
     let slider = document.getElementById("slider")
     let randP = document.getElementById("randTime")    
     randP.innerHTML = slider.value
     random_duration = slider.value
 })
-document.getElementById("dialog").addEventListener("close", () => {
-    dialogOpen = false
-})
+
+document.getElementById("slider").value = random_duration
+document.getElementById("randTime").innerHTML = random_duration
 
 document.getElementById("search").addEventListener("input", (e) => {
     searchTerm = e.target.value
     setList()
+})
+
+document.getElementById("pp_left").addEventListener("click", (e) => {
+    let current_index = playlists.indexOf(currentPlaylist)
+    if(current_index - 1 < 0){
+        currentPlaylist = playlists[playlists.length-1]
+    }
+    else{
+        currentPlaylist = playlists[current_index-1]
+    }
+    setCurrentPlaylist()
+})
+
+document.getElementById("pp_right").addEventListener("click", (e) => {
+    let current_index = playlists.indexOf(currentPlaylist)
+    if(current_index + 1 >= playlists.length){
+        currentPlaylist = playlists[0]
+    }
+    else{
+        currentPlaylist = playlists[current_index+1]
+    }
+    setCurrentPlaylist()
 })
 
 //run

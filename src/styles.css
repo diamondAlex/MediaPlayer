@@ -20,13 +20,17 @@
     padding-left:15px;
     float:left;
 }
-.link_list{
+.list{
+    padding-left:0.5em;
+}
+.picker{
+    cursor:pointer;
+}
+.search{
+    margin-top:1em;
+    margin-left:0.5em;
     /*border:solid;*/
-    /*border-color:blue;*/
-    width:22%;
-    margin-left:15px;
-    padding-left:15px;
-    float:left;
+    /*border-color:orange;*/
 }
 .playing{
     /*border:solid;*/

@@ -2,44 +2,33 @@
 let container = document.getElementsByClassName("container")[0]
 container.className = "splash-container"
 
-function createPopupDialog(){
-    let dialog = document.createElement("dialog")
-    dialog.innerHTML = `
-        <textarea id="dialogName"></textarea>
-        <button id="submitName">submit</button>
-        `
-    dialog.id = 'dialog'
-
-    container.appendChild(dialog)
-}
-
 function createList(){
-    //terrible naming
     let listDiv = document.createElement("div") 
     listDiv.classList.add('right','splash-subhead')
     listDiv.id = 'list_container'
-    //list of files
+    let playlist_picker = document.createElement("div")
+    playlist_picker.id = "playlist_picker_container"
+    playlist_picker.innerHTML = `
+        <p id="playlist_picker" > 
+            <span id="pp_left" class="picker"> &#8592;</span>
+            <span id="pp_value">  </span>
+            <span id="pp_right" class="picker"> &#8594;</span>
+        </p>
+    `
     let search = document.createElement("textarea") 
-    search.className = 'links_list'
+    search.classList.add('search')
     search.id = 'search'
     //list of files
     let list = document.createElement("div") 
-    list.className = 'links_list'
+    list.className = 'list'
     list.id = 'list'
     //name of currently playing file
-    let playDiv = document.createElement("div")
     let playing = document.createElement("div")
     playing.id = "playing"
     playing.classList.add("playing","splash-head")
-    //WILL NEED TO FIX THIS
-    //let button1 = document.createElement("button")
-    //button1.id = "edithead"
-    //button1.innerHTML = 'edit'
-    //button1.className = "edit"
-    //playDiv.appendChild(button1)
 
-    playDiv.appendChild(playing)
-    listDiv.appendChild(playDiv)
+    listDiv.appendChild(playing)
+    listDiv.appendChild(playlist_picker)
     listDiv.appendChild(search)
     listDiv.appendChild(list)
 
@@ -49,28 +38,28 @@ function createList(){
 function createButton(){
     let buttonDiv = document.createElement("div") 
     buttonDiv.className = "right"
-    let button1 = document.createElement("button")
-    button1.id = "random"
-    button1.innerHTML = 'random'
-    button1.className = "pure-button"
+    let random = document.createElement("button")
+    random.id = "random"
+    random.innerHTML = 'random'
+    random.className = "pure-button"
 
-    let button2 = document.createElement("button")
-    button2.id = "shuffle"
-    button2.innerHTML = 'shuffle'
-    button2.className = "pure-button"
+    let shuffle = document.createElement("button")
+    shuffle.id = "shuffle"
+    shuffle.innerHTML = 'shuffle'
+    shuffle.className = "pure-button"
 
-    let button3 = document.createElement("button")
-    button3.id = "save"
-    button3.innerHTML = 'save'
-    button3.className = "pure-button"
+    let save = document.createElement("button")
+    save.id = "save"
+    save.innerHTML = 'save'
+    save.className = "pure-button"
 
     //sets the random clip duration
     let slider = document.createElement("div")
-    slider.innerHTML= `<input type="range" min="1" max="100" value="50" class="slider" id="slider"><span id="randTime"> 50 </span>`
+    slider.innerHTML= `<input type="range" min="1" max="100" class="slider" id="slider"><span id="randTime"></span>`
 
-    buttonDiv.appendChild(button1)
-    buttonDiv.appendChild(button2)
-    buttonDiv.appendChild(button3)
+    buttonDiv.appendChild(random)
+    buttonDiv.appendChild(shuffle)
+    buttonDiv.appendChild(save)
     buttonDiv.appendChild(slider)
 
     container.appendChild(buttonDiv)
@@ -108,7 +97,6 @@ function spawnInterface(){
     createVideoSection()
     createButton()
     createList()
-    createPopupDialog()
 }
 
 spawnInterface()
