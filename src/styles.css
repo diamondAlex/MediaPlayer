@@ -16,8 +16,15 @@
     /*border:solid;*/
     /*border-color:blue;*/
     width:22%;
+    padding-top:1em;
     margin-left:15px;
     padding-left:15px;
+    float:left;
+}
+.player{
+    padding:1em;
+    width:87em;
+    height:45em;
     float:left;
 }
 .list{

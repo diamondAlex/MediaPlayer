@@ -66,15 +66,15 @@ function createButton(){
 }
 function createVideoSection(){
     let vid = document.createElement("div")
-    vid.id ="vidplayer"
+    vid.id ="video"
     vid.className ="left"
     vid.innerHTML = `
         <video
             id="player"
-            class="video-js"
+            class="player"
             controls
-            preload="auto"
-            data-setup='{}'>
+            autoplay
+            muted
         </video>
     `
     //need to be renamed to some saving specific name

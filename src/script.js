@@ -25,11 +25,7 @@ let searchTerm = ""
 /*------------------------------------------ */
 
 //player 
-let player = videojs("player")
-    player.fill(true)
-    player.aspectRatio('20:9')
-    player.autoplay(true)
-    player.muted(true)
+let player = document.getElementById("player")
 
 
 let randomIndex = () =>{
@@ -41,12 +37,10 @@ let randomIndex = () =>{
 let setCurrentPlaylist = () =>{
     document.getElementById("pp_value").innerHTML = currentPlaylist
     let newFileNames = []
-    console.log(pathNames)
     for(let file of Object.values(pathNames)){
         let path = file.split('/').slice(0,-1).join('/')
         let fileName = file.split('/').slice(-1)[0]
         if(path === currentPlaylist){
-            console.log(file)
             newFileNames.push(fileName)
         }
     }
@@ -95,10 +89,7 @@ let setPlaying = (url, time = 0) =>{
     let playing = document.getElementById("playing")
     playing.innerHTML = url.split("/").slice(-1) 
     console.log(url)
-    player.src({
-        type: "video/mp4",
-        src: url + "/fetch"
-    })
+    player.src = url + "/fetch"
     if(time != 0){
         player.currentTime(time)
     }
@@ -264,17 +255,17 @@ let skip=(time)=>{
 }
 
 //----------------------EVENTS-------------------------------
-player.on("loadedmetadata", () => {
+player.addEventListener("loadedmetadata", () => {
     let time = player.duration()
     for(let i =0; i <=9;i++){
         split.set(i,time*i/10)
     }
 })
 
-player.on("ended", () => playNext())
+player.addEventListener("ended", () => playNext())
 //for later use
-player.on("mouseover", () => inFocus = true)
-player.on("mouseleave", () => inFocus = false)
+player.addEventListener("mouseover", () => inFocus = true)
+player.addEventListener("mouseleave", () => inFocus = false)
 
 window.addEventListener("touchstart", doubleTouch)
 
