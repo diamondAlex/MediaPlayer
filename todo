@@ -1,3 +1,2 @@
-need saved clips to persist and have a way to delete from list
-random times are clunky, it takes one extra random to adjust itself to the proper time
-review the playlist/filename data struct to see if they are all necessary
+need saved clips to persist and have a way to delete from saved clip list
+see if we need both fileNames and pathNames
