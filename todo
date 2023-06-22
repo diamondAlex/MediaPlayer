@@ -1,6 +1,4 @@
-playlists look fine so far.... BUT TO BE CONTINUED
-make a playlist tree with the subfolders of vods
-playlists don't update themselves at the same time as links
 need saved clips to persist and have a way to delete from list
 random times are clunky, it takes one extra random to adjust itself to the proper time
 The call cycle when loading the page isn't great since we fetch the list, then setplaying, which then refetches the list
+playlists look fine so far.... BUT TO BE CONTINUED
