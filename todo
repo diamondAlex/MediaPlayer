@@ -1,2 +1,3 @@
-need saved clips to persist and have a way to delete from saved clip list
 see if we need both fileNames and pathNames
+compare content size and their performance
+there's an error on the saved timestamp for the minutes/hours. I've seen it displayed as 01:101:17 on long clips

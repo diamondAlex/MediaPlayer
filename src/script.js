@@ -123,14 +123,16 @@ let playNext = () =>{
 }
 
 let next_event = new Event("next")
-//the click arg will stop random if button or KeyR clicked
-let playRandom = (click) => {
+
+//the click arg (bool) will stop random if button or KeyR clicked (basically toggles)
+//the stop arg (bool) will stop random
+let playRandom = (click, stop) => {
     if(!random_flag && click){
         let button = document.getElementById("random") 
         button.style.backgroundColor = "green"
         random_flag = 1
     }
-    else if(click){
+    else if(click || stop){
         let button = document.getElementById("random") 
         button.style.backgroundColor = "red"
         random_flag = 0
@@ -211,10 +213,24 @@ function timestampToTime(timestamp){
     return hours + ":" + minutes + ":" + seconds
 }
 
+function playSaved(key){
+    playRandom(false, true)
+    let index = parseInt(key.slice(-1)) - 1
+    if(savedClip[index]){
+        setPlaying(savedClip[index][0], savedClip[index][1])
+    }
+}
+
 function saveClip(){
     let currentPlaying = document.getElementById("playing").innerHTML
     let timestamp = player.currentTime
-    savedClip.push([currentPlaying,timestamp])
+    if(savedClip.length < 10){
+        savedClip.push([currentPlaying,timestamp])
+    }
+    else{
+        savedClip.shift()
+        savedClip.push([currentPlaying,timestamp])
+    }
 
     let span = document.getElementById("under")         
     span.innerHTML = ""
@@ -282,6 +298,9 @@ document.addEventListener("keydown", (e) => {
     let c = e.code
     if(c=="ArrowLeft"){
         skip(-15);
+    }
+    else if(e.ctrlKey && c.includes("Digit")){
+        playSaved(c)
     }
     else if(c=="ArrowRight"){
         skip(15);
