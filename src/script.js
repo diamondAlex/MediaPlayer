@@ -122,36 +122,37 @@ let playNext = () =>{
     player.play()
 }
 
+let next_event = new Event("next")
 //the click arg will stop random if button or KeyR clicked
-//let playRandom = (click) => {
-    //if(!random_flag && click){
-        //let button = document.getElementById("random") 
-        //button.style.backgroundColor = "green"
-        //random_flag = 1
-    //}
-    //else if(click){
-        //let button = document.getElementById("random") 
-        //button.style.backgroundColor = "red"
-        //random_flag = 0
-        //return
-    //}
-    //if(!random_flag) return
-    //let id = Math.floor(Math.random()*fileNames.length)
-    //setPlaying(url+ "/" + fileNames[id])
-    //player.one("loadedmetadata", () =>{
-        //let time = player.duration()
-        //let randTime = Math.floor(Math.random()*time)
-        //player.currentTime = randTime
-        //amount++
-        //player.one('next', function () {
-            //playRandom()
-        //})
-        //window.setTimeout(() =>{
-            //amount--
-            //if(amount == 0) player.trigger("next") 
-        //},random_duration * 1000)
-    //})
-//}
+let playRandom = (click) => {
+    if(!random_flag && click){
+        let button = document.getElementById("random") 
+        button.style.backgroundColor = "green"
+        random_flag = 1
+    }
+    else if(click){
+        let button = document.getElementById("random") 
+        button.style.backgroundColor = "red"
+        random_flag = 0
+        return
+    }
+    if(!random_flag) return
+    let id = Math.floor(Math.random()*fileNames.length)
+    setPlaying(url+ "/" + fileNames[id])
+    player.addEventListener("loadedmetadata", () =>{
+        let time = player.duration
+        let randTime = Math.floor(Math.random()*time)
+        player.currentTime = randTime
+        amount++
+        player.addEventListener('next', function () {
+            playRandom()
+        },{once:true})
+        window.setTimeout(() =>{
+            amount--
+            if(amount == 0) player.dispatchEvent(next_event)
+        },random_duration * 1000)
+    }, {once:true})
+}
 
 //creates the list and their listeners
 let setList = () => {
@@ -186,7 +187,7 @@ let doubleTouch = function (e) {
                 return    
             }
             if(random_flag){
-                //playRandom()
+                playRandom()
             }
             else{
                 playNext()
@@ -272,7 +273,7 @@ player.addEventListener("mouseleave", () => inFocus = false)
 
 window.addEventListener("touchstart", doubleTouch)
 
-//document.getElementById("random").addEventListener("click",()=>playRandom(1))
+document.getElementById("random").addEventListener("click",()=>playRandom(1))
 document.getElementById("shuffle").addEventListener("click",()=>shuffleList())
 document.getElementById("save").addEventListener("click",()=>saveClip())
 
@@ -286,7 +287,7 @@ document.addEventListener("keydown", (e) => {
         skip(15);
     }
     else if(!e.ctrlKey && c=="KeyR"){
-        //playRandom(1)
+        playRandom(1)
     }
     else if(c=="KeyB"){
         playPrev()
@@ -299,14 +300,14 @@ document.addEventListener("keydown", (e) => {
         saveClip()
     }
     else if(c=="KeyN"){
-        random_flag ? player.trigger("next") : playNext()
+        random_flag ? player.dispatchEvent(next_event) : playNext()
     }
     else if(!e.ctrlKey && c=="KeyF"){
         openFullscreen()
     }
     else if(c=="Space"){
         e.preventDefault()
-        player.paused() ? player.play() : player.pause()
+        player.paused ? player.play() : player.pause()
     }
     else if(c.includes("Digit")){
         let time = split.get(parseInt(c.slice(-1)))

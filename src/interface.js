@@ -57,7 +57,7 @@ function createButton(){
     let slider = document.createElement("div")
     slider.innerHTML= `<input type="range" min="1" max="100" class="slider" id="slider"><span id="randTime"></span>`
 
-    //buttonDiv.appendChild(random)
+    buttonDiv.appendChild(random)
     buttonDiv.appendChild(shuffle)
     buttonDiv.appendChild(save)
     buttonDiv.appendChild(slider)
