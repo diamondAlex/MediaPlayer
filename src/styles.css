@@ -22,9 +22,10 @@
     float:left;
 }
 .player{
+    background-color:black;
     padding:1em;
-    width:87em;
-    height:45em;
+    width:100%;
+    height:56%;
     float:left;
 }
 .list{

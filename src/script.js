@@ -91,13 +91,13 @@ let setPlaying = (url, time = 0) =>{
     console.log(url)
     player.src = url + "/fetch"
     if(time != 0){
-        player.currentTime(time)
+        player.currentTime = time
     }
     updateFileList()
 }
 
 let playPrev = () =>{
-    let current = player.lastSource_.player
+    let current = player.src
     let file = fileNames.findIndex((val) => current.includes(val))
     if (file == 0){
         file = fileNames.length
@@ -108,7 +108,7 @@ let playPrev = () =>{
 }
 
 let playNext = () =>{
-    let current = player.lastSource_.player
+    let current = player.src
     let file = fileNames.findIndex((val) => current.includes(val))
     if (file == fileNames.length - 1){
         file =-1 
@@ -119,35 +119,35 @@ let playNext = () =>{
 }
 
 //the click arg will stop random if button or KeyR clicked
-let playRandom = (click) => {
-    if(!random_flag && click){
-        let button = document.getElementById("random") 
-        button.style.backgroundColor = "green"
-        random_flag = 1
-    }
-    else if(click){
-        let button = document.getElementById("random") 
-        button.style.backgroundColor = "red"
-        random_flag = 0
-        return
-    }
-    if(!random_flag) return
-    let id = Math.floor(Math.random()*fileNames.length)
-    setPlaying(url+ "/" + fileNames[id])
-    player.one("loadedmetadata", () =>{
-        let time = player.duration()
-        let randTime = Math.floor(Math.random()*time)
-        player.currentTime(randTime)
-        amount++
-        player.one('next', function () {
-            playRandom()
-        })
-        window.setTimeout(() =>{
-            amount--
-            if(amount == 0) player.trigger("next") 
-        },random_duration * 1000)
-    })
-}
+//let playRandom = (click) => {
+    //if(!random_flag && click){
+        //let button = document.getElementById("random") 
+        //button.style.backgroundColor = "green"
+        //random_flag = 1
+    //}
+    //else if(click){
+        //let button = document.getElementById("random") 
+        //button.style.backgroundColor = "red"
+        //random_flag = 0
+        //return
+    //}
+    //if(!random_flag) return
+    //let id = Math.floor(Math.random()*fileNames.length)
+    //setPlaying(url+ "/" + fileNames[id])
+    //player.one("loadedmetadata", () =>{
+        //let time = player.duration()
+        //let randTime = Math.floor(Math.random()*time)
+        //player.currentTime = randTime
+        //amount++
+        //player.one('next', function () {
+            //playRandom()
+        //})
+        //window.setTimeout(() =>{
+            //amount--
+            //if(amount == 0) player.trigger("next") 
+        //},random_duration * 1000)
+    //})
+//}
 
 let fetchInfo = () => {
     fetch(url+"/files",{
@@ -170,7 +170,7 @@ let setList = () => {
     for(let line of Object.values(fileNames)){
         let link = document.createElement("p")
         link.addEventListener("click", () => {
-            player.muted(true)
+            player.muted = true
             setPlaying(url + "/" + line)
         })
         link.id = line
@@ -196,7 +196,7 @@ let doubleTouch = function (e) {
                 return    
             }
             if(random_flag){
-                playRandom()
+                //playRandom()
             }
             else{
                 playNext()
@@ -222,7 +222,7 @@ function timestampToTime(timestamp){
 
 function saveClip(){
     let currentPlaying = document.getElementById("playing").innerHTML
-    let timestamp = player.currentTime()
+    let timestamp = player.currentTime
     savedClip.push([currentPlaying,timestamp])
 
     let span = document.getElementById("under")         
@@ -251,12 +251,25 @@ function shuffleList(){
 }
 
 let skip=(time)=>{
-  player.currentTime(player.currentTime()+time)
+  player.currentTime = player.currentTime +time
+}
+
+function openFullscreen() {
+    if(document.fullscreenElement){
+        document.exitFullscreen() 
+    }
+    else if (player.requestFullscreen) {
+        player.requestFullscreen();
+    } else if (player.webkitRequestFullscreen) { /* Safari */
+            player.webkitRequestFullscreen();
+    } else if (player.msRequestFullscreen) { /* IE11 */
+            player.msRequestFullscreen();
+    }
 }
 
 //----------------------EVENTS-------------------------------
 player.addEventListener("loadedmetadata", () => {
-    let time = player.duration()
+    let time = player.duration
     for(let i =0; i <=9;i++){
         split.set(i,time*i/10)
     }
@@ -269,7 +282,7 @@ player.addEventListener("mouseleave", () => inFocus = false)
 
 window.addEventListener("touchstart", doubleTouch)
 
-document.getElementById("random").addEventListener("click",()=>playRandom(1))
+//document.getElementById("random").addEventListener("click",()=>playRandom(1))
 document.getElementById("shuffle").addEventListener("click",()=>shuffleList())
 document.getElementById("save").addEventListener("click",()=>saveClip())
 
@@ -283,7 +296,7 @@ document.addEventListener("keydown", (e) => {
         skip(15);
     }
     else if(!e.ctrlKey && c=="KeyR"){
-        playRandom(1)
+        //playRandom(1)
     }
     else if(c=="KeyB"){
         playPrev()
@@ -299,8 +312,7 @@ document.addEventListener("keydown", (e) => {
         random_flag ? player.trigger("next") : playNext()
     }
     else if(!e.ctrlKey && c=="KeyF"){
-        !player.isFullscreen() ? 
-            player.requestFullscreen() : player.exitFullscreen()
+        openFullscreen()
     }
     else if(c=="Space"){
         e.preventDefault()
@@ -308,7 +320,7 @@ document.addEventListener("keydown", (e) => {
     }
     else if(c.includes("Digit")){
         let time = split.get(parseInt(c.slice(-1)))
-        player.currentTime(time)
+        player.currentTime = time
     }
 
 })
