@@ -67,16 +67,19 @@ function createButton(){
 function createVideoSection(){
     let vid = document.createElement("div")
     vid.id ="video"
-    vid.className ="left"
-    vid.innerHTML = `
-        <video
-            id="player"
-            class="player"
-            controls
-            autoplay
-            muted
-        </video>
-    `
+    vid.classList.add("left")
+
+    let player_container = document.createElement("div")
+    player_container.id ="player_container"
+    player_container.classList.add("player_container")
+
+    let player = document.createElement("video")
+    player.id = "player"
+    player.classList.add("videosize")
+    player.controls = true
+    player.autoplay = true
+    player.muted = true
+    
     //need to be renamed to some saving specific name
     let underVid = document.createElement("div")
     underVid.className = "splash-under"
@@ -89,6 +92,8 @@ function createVideoSection(){
 
     underVid.appendChild(p)
     underVid.appendChild(underList)
+    player_container.appendChild(player)
+    vid.appendChild(player_container)
     vid.appendChild(underVid)
     container.append(vid)
 }

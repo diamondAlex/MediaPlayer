@@ -6,10 +6,16 @@ let random_duration = 5
 let vodsAmt = 0
 let url = window.location.origin
 let fileNames = []
+
+//needed for playlist
+//{"vidname":"vidfullpath"}
 let pathNames = {}
+
 let playlists = []
 let currentPlaylist = ""
+
 let expired
+
 //limits the timeouts launched by random
 let random_flag = 0
 let amount = 0
@@ -34,8 +40,28 @@ let randomIndex = () =>{
 
 //----------------------FUNCTIONS ------------------------------
 
+let fetchInfo = () => {
+    fetch(url+"/files",{
+        method:"GET",
+    })
+        .then((ret) => ret.json())
+        .then((json) =>{
+            pathNames= json.files
+            fileNames = Object.keys(pathNames)
+            vodsAmt = fileNames.length
+            setPlaylistArray()
+            setList()
+            setPlaying(url + "/" + fileNames[randomIndex()])
+    })
+}
+
+//sets the fileNames to that of the currently selected playlist
+//updates the name as well
 let setCurrentPlaylist = () =>{
-    document.getElementById("pp_value").innerHTML = currentPlaylist
+    //not very clean
+    let placeholder = "/"
+    currentPlaylist != "" ? placeholder =currentPlaylist : false;
+    document.getElementById("pp_value").innerHTML = placeholder
     let newFileNames = []
     for(let file of Object.values(pathNames)){
         let path = file.split('/').slice(0,-1).join('/')
@@ -48,6 +74,7 @@ let setCurrentPlaylist = () =>{
     setList()
 }
 
+//takes the initial data from the server and converts it to playlists
 let setPlaylistArray = () => {
     let paths = Object.values(pathNames)
     paths.forEach((e) => {
@@ -63,28 +90,6 @@ let setPlaylistArray = () => {
     }
 }
 
-let updateFileList = () => {
-    fetch(url+"/files",{
-        method:"GET",
-    })
-        .then((ret) => ret.json())
-        .then((json) =>{
-            pathNames= json.files
-            let newFileNames = Object.keys(pathNames)
-            reorderList(newFileNames)
-            vodsAmt = fileNames.length
-            setPlaylistArray()
-    })
-}
-
-let reorderList = (list) => {
-    for(let entry of list){
-        !fileNames.includes(entry) ? fileNames.push(entry) : false;
-    }
-    fileNames = fileNames.filter((e) => list.includes(e))
-}
-    
-
 let setPlaying = (url, time = 0) =>{
     let playing = document.getElementById("playing")
     playing.innerHTML = url.split("/").slice(-1) 
@@ -93,7 +98,6 @@ let setPlaying = (url, time = 0) =>{
     if(time != 0){
         player.currentTime = time
     }
-    updateFileList()
 }
 
 let playPrev = () =>{
@@ -148,20 +152,6 @@ let playNext = () =>{
         //},random_duration * 1000)
     //})
 //}
-
-let fetchInfo = () => {
-    fetch(url+"/files",{
-        method:"GET",
-    })
-        .then((ret) => ret.json())
-        .then((json) =>{
-            pathNames= json.files
-            fileNames = Object.keys(pathNames)
-            vodsAmt = fileNames.length
-            setList()
-            setPlaying(url + "/" + fileNames[randomIndex()])
-    })
-}
 
 //creates the list and their listeners
 let setList = () => {
