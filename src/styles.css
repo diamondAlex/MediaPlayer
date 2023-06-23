@@ -33,6 +33,9 @@
 .list{
     padding-left:0.5em;
 }
+.link{
+    cursor:pointer;
+}
 .picker{
     cursor:pointer;
 }

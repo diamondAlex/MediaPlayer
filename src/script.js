@@ -168,6 +168,7 @@ let setList = () => {
         })
         link.id = line
         link.innerHTML = line 
+        link.className = "link"
         if(searchTerm == ""){
             span.appendChild(link)
         }
@@ -177,18 +178,30 @@ let setList = () => {
     }
 }
 
+let expired1 
+let stopZoom = function(e) {
+    if (e.touches.length === 0) {
+        if (!expired1) {
+            expired1 = e.timeStamp + 400
+        } else if (e.timeStamp <= expired1) {
+            e.preventDefault()
+        } else {
+            // if the second touch was expired1, make it as it's the first
+            expired1 = e.timeStamp + 400
+        }
+    }
+}
+
 let doubleTouch = function (e) {
     if (e.touches.length === 1) {
         if (!expired) {
             expired = e.timeStamp + 400
         } else if (e.timeStamp <= expired) {
-            e.preventDefault()
             // only next if double click player
-            if(!e.target.playerId){
-                expired = null
-                return    
+            if(!document.fullscreenElement){
+                openFullscreen()
             }
-            if(random_flag){
+            else if(random_flag){
                 playRandom()
             }
             else{
@@ -287,7 +300,9 @@ player.addEventListener("ended", () => playNext())
 player.addEventListener("mouseover", () => inFocus = true)
 player.addEventListener("mouseleave", () => inFocus = false)
 
+
 window.addEventListener("touchstart", doubleTouch)
+window.addEventListener("touchend", stopZoom)
 
 document.getElementById("random").addEventListener("click",()=>playRandom(1))
 document.getElementById("shuffle").addEventListener("click",()=>shuffleList())
