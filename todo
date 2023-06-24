@@ -1,4 +1,3 @@
 see if we need both fileNames and pathNames
 compare content size and their performance
-there's an error on the saved timestamp for the minutes/hours. I've seen it displayed as 01:101:17 on long clips
 random won't update rand_time right away, it'll take an extra random clip

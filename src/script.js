@@ -14,7 +14,10 @@ let pathNames = {}
 let playlists = []
 let currentPlaylist = ""
 
+//allows double click to play next
 let expired
+//prevents default on double clicking (zooming and such)
+let touch_expire 
 
 //limits the timeouts launched by random
 let random_flag = 0
@@ -178,16 +181,15 @@ let setList = () => {
     }
 }
 
-let expired1 
 let stopZoom = function(e) {
     if (e.touches.length === 0) {
-        if (!expired1) {
-            expired1 = e.timeStamp + 400
-        } else if (e.timeStamp <= expired1) {
+        if (!touch_expire) {
+            touch_expire = e.timeStamp + 400
+        } else if (e.timeStamp <= touch_expire) {
             e.preventDefault()
         } else {
-            // if the second touch was expired1, make it as it's the first
-            expired1 = e.timeStamp + 400
+            // if the second touch was touch_expire, make it as it's the first
+            touch_expire = e.timeStamp + 400
         }
     }
 }
@@ -217,10 +219,12 @@ let doubleTouch = function (e) {
 }
 
 function timestampToTime(timestamp){
+    console.log(timestamp)
     let seconds = Math.floor(timestamp % 60)
     seconds = seconds < 10 ? seconds.toString().padStart(2,"0") : seconds.toString();
-    let minutes = Math.floor(timestamp/60)
+    let minutes = Math.floor(timestamp%3600/60)
     minutes = minutes < 10 ? minutes.toString().padStart(2,"0") : minutes.toString();
+    //won't handle stuff that's too long, but who cares
     let hours = Math.floor(timestamp/(60*60))
     hours = hours < 10 ? hours.toString().padStart(2,"0") : hours.toString();
     return hours + ":" + minutes + ":" + seconds
