@@ -20,7 +20,7 @@ let touch_expire
 
 //limits the timeouts launched by random
 let random_flag = 0
-let amount = 0
+let random_flush = 0
 
 let split = new Map()
 
@@ -136,37 +136,45 @@ let playNext = () =>{
 }
 
 let next_event = new Event("next")
+let currentTimeout = null
+
 //the click arg (bool) will stop random if button or KeyR clicked (basically toggles)
 //the stop arg (bool) will stop random
+//lots of complexity to this guy
 let playRandom = (click, stop) => {
+    //starts random if button or shortcut clicked
     if(!random_flag && click){
         let button = document.getElementById("random") 
         button.style.backgroundColor = "green"
         random_flag = 1
     }
+    //stops random if clicked or any function calls for it to stop
     else if(click || stop){
         let button = document.getElementById("random") 
         button.style.backgroundColor = "red"
         random_flag = 0
         return
     }
+    //somehow not supposed to be called?
     if(!random_flag) return
-    let id = Math.floor(Math.random()*fileNames.length)
+
+    let id = randomIndex()
     setPlaying(fileNames[id])
+
     player.addEventListener("loadedmetadata", () =>{
         let time = player.duration
         let randTime = Math.floor(Math.random()*time)
         player.currentTime = randTime
-        amount++
+        //once the event is called, it'll run the next random
         player.addEventListener('next', function () {
             playRandom()
         },{once:true})
-        window.setTimeout(() =>{
-            amount--
-            if(amount == 0) player.dispatchEvent(next_event)
-        },random_duration * 1000)
+        //this is run after the random_duration unless user clicks next
+        currentTimeout = window.setTimeout(() => player.dispatchEvent(next_event)
+            ,random_duration * 1000)
     }, {once:true})
 }
+
 
 //creates the list and their listeners
 let setList = () => {
@@ -213,7 +221,9 @@ let doubleTouch = function (e) {
                 openFullscreen()
             }
             else if(random_flag){
-                playRandom()
+                //clearTimeout ensures that timeout won't dispatch extra event
+                clearTimeout(currentTimeout)
+                player.dispatchEvent("next")
             }
             else{
                 playNext()
@@ -345,7 +355,12 @@ document.addEventListener("keydown", (e) => {
         saveClip()
     }
     else if(c=="KeyN"){
-        random_flag ? player.dispatchEvent(next_event) : playNext()
+        if(random_flag){
+            clearTimeout(currentTimeout) 
+            player.dispatchEvent(next_event) 
+        }else{
+            playNext()
+        }
     }
     else if(!e.ctrlKey && c=="KeyF"){
         openFullscreen()
@@ -366,6 +381,7 @@ document.getElementById("slider").addEventListener("input", () =>{
     let randP = document.getElementById("randTime")    
     randP.innerHTML = slider.value
     random_duration = slider.value
+    random_flush = 1
 })
 
 document.getElementById("slider").value = random_duration
