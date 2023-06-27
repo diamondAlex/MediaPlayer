@@ -58,6 +58,13 @@ let fetchInfo = () => {
             setList()
             setPlaying(url + "/" + fileNames[randomIndex()])
     })
+    fetch(url+"/savedlist",{
+        method:"GET",
+    })
+        .then((ret) => ret.json())
+        .then((json) =>{
+            console.log(json)
+    })
 }
 
 //sets the fileNames to that of the currently selected playlist
@@ -224,7 +231,6 @@ let doubleTouch = function (e) {
 }
 
 function timestampToTime(timestamp){
-    console.log(timestamp)
     let seconds = Math.floor(timestamp % 60)
     seconds = seconds < 10 ? seconds.toString().padStart(2,"0") : seconds.toString();
     let minutes = Math.floor(timestamp%3600/60)
@@ -243,6 +249,7 @@ function playSaved(key){
     }
 }
 
+//will have to remove the queue logic
 function saveClip(){
     let currentPlaying = document.getElementById("playing").innerHTML
     let timestamp = player.currentTime
@@ -265,6 +272,9 @@ function saveClip(){
         span.appendChild(link)
     }
     
+    let formattedUrl = url + "/" + currentPlaying+"__"+timestamp+"/save"
+    console.log(formattedUrl)
+    fetch(formattedUrl)
 }
 
 function shuffleList(){

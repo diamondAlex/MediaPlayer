@@ -16,6 +16,15 @@ http.createServer(function (req, res) {
         res.write(page)
         res.end()
     }
+    //this pathing is awful
+    else if(path.includes("/savedlist")){
+        getSavedList(res)
+    }
+    else if(path.includes("/save")){
+        console.log(path)
+        saveTimestamp(path)
+        res.end()
+    }
     else if(path.includes("/fetch")){
         let name = getList()[path.split('/')[1]]
         video(req,res,name)
@@ -97,3 +106,45 @@ let getList = () => {
     return fileList
 }
 
+let saveTimestamp = (info) => {
+    let stamp = info.split("/")[1]
+    //need some better unique way of splitting to avoid cases where char
+    //is in the video title
+    let [video, time] = stamp.split("__")
+
+    let fd = fs.openSync("local/timestamps.json","as+")
+
+    let json
+
+    let file = fs.readFileSync(fd)
+    
+    if(file != 0){
+        json = JSON.parse(file) 
+        console.log(json)
+        json.push({video:video,time:time})
+    }
+    else{
+        json = [{video:video,time:time}]
+    }
+
+    fs.writeFile("local/timestamps.json",JSON.stringify(json), ()=>{})
+    fs.close(fd)
+}
+
+let getSavedList = (res) =>{
+    fs.readFile('local/timestamps.json', (err, file) =>{
+        if(err) res.end()
+        else{
+            try{
+                let json = JSON.parse(file)
+                res.write(JSON.stringify(json))
+                res.end()
+    
+            }
+            catch(err){
+                console.log(err)
+                res.end()
+            }
+        }
+    })
+}
