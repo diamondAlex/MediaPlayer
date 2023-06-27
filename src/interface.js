@@ -8,6 +8,7 @@ function createList(){
     listDiv.id = 'list_container'
     let playlist_picker = document.createElement("div")
     playlist_picker.id = "playlist_picker_container"
+    playlist_picker.className="picker_container"
     playlist_picker.innerHTML = `
         <p id="playlist_picker" > 
             <span id="pp_left" class="picker"> &#8592;</span>
@@ -15,7 +16,9 @@ function createList(){
             <span id="pp_right" class="picker"> &#8594;</span>
         </p>
     `
-    let search = document.createElement("textarea") 
+    let search = document.createElement("div") 
+    search.contentEditable = true
+    search.setAttribute("datatext", "search")
     search.classList.add('search')
     search.id = 'search'
     //list of files

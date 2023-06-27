@@ -37,6 +37,8 @@ let searchTerm = ""
 let player = document.getElementById("player")
 
 
+//only used to set a random starting video
+//is that even good?
 let randomIndex = () =>{
     return Math.floor(Math.random() * (vodsAmt - 1))
 }
@@ -174,6 +176,7 @@ let setList = () => {
         link.id = line
         link.innerHTML = line 
         link.className = "link"
+        console.log(searchTerm)
         if(searchTerm == ""){
             span.appendChild(link)
         }
@@ -363,7 +366,7 @@ document.getElementById("slider").value = random_duration
 document.getElementById("randTime").innerHTML = random_duration
 
 document.getElementById("search").addEventListener("input", (e) => {
-    searchTerm = e.target.value
+    searchTerm = e.target.innerHTML
     setList()
 })
 

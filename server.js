@@ -94,7 +94,6 @@ let getList = () => {
         }
     }
 
-    console.log(fileList)
     return fileList
 }
 
