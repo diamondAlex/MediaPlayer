@@ -2,6 +2,7 @@
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
+const { callbackify } = require('util');
 
 let vodPath = "vods"
 
@@ -27,6 +28,10 @@ http.createServer(function (req, res) {
     }
     else if(path.includes("/fetch")){
         let name = getList()[path.split('/')[1]]
+        if(name == null){
+            res.statusCode = 500
+            res.end()
+        }
         video(req,res,name)
     }
     else if(path == "/files"){
@@ -81,7 +86,14 @@ const fileTypes = [
 
 let getList = () => {
     let fileList = {}
-    let folders = fs.readdirSync(vodPath)
+    let folders
+    try{
+        folders = fs.readdirSync(vodPath)
+    }
+    catch(err){
+        console.log(err)
+        return null
+    }
 
     while(folders.length != 0){
         let currentPath = folders.pop()

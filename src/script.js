@@ -3,7 +3,6 @@ let random_duration = 5
 
 /*--------------variables ----------------------- */
 
-let vodsAmt = 0
 let url = window.location.origin
 let fileNames = []
 
@@ -40,7 +39,7 @@ let player = document.getElementById("player")
 //only used to set a random starting video
 //is that even good?
 let randomIndex = () =>{
-    return Math.floor(Math.random() * (vodsAmt - 1))
+    return Math.floor(Math.random() * (fileNames.length - 1))
 }
 
 //----------------------FUNCTIONS ------------------------------
@@ -53,17 +52,16 @@ let fetchInfo = () => {
         .then((json) =>{
             pathNames= json.files
             fileNames = Object.keys(pathNames)
-            vodsAmt = fileNames.length
             setPlaylistArray()
             setList()
-            setPlaying(url + "/" + fileNames[randomIndex()])
+            setPlaying(fileNames[randomIndex()])
     })
     fetch(url+"/savedlist",{
         method:"GET",
     })
         .then((ret) => ret.json())
         .then((json) =>{
-            console.log(json)
+            //this needs to add the proper savedclip for the playlist
     })
 }
 
@@ -102,10 +100,10 @@ let setPlaylistArray = () => {
     }
 }
 
-let setPlaying = (url, time = 0) =>{
+let setPlaying = (videoName, time = 0) =>{
     let playing = document.getElementById("playing")
-    playing.innerHTML = url.split("/").slice(-1) 
-    player.src = url + "/fetch"
+    playing.innerHTML = videoName
+    player.src = url + "/" + videoName + "/fetch"
     if(time != 0){
         player.currentTime = time
     }
@@ -122,7 +120,7 @@ let playPrev = () =>{
         file = fileNames.length
     }
     let next = fileNames[file-1]
-    setPlaying(url + "/" + next)
+    setPlaying(next)
     player.play()
 }
 
@@ -133,7 +131,7 @@ let playNext = () =>{
         file =-1 
     }
     let next = fileNames[file+1]
-    setPlaying(url +"/" +  next)
+    setPlaying(next)
     player.play()
 }
 
@@ -154,7 +152,7 @@ let playRandom = (click, stop) => {
     }
     if(!random_flag) return
     let id = Math.floor(Math.random()*fileNames.length)
-    setPlaying(url+ "/" + fileNames[id])
+    setPlaying(fileNames[id])
     player.addEventListener("loadedmetadata", () =>{
         let time = player.duration
         let randTime = Math.floor(Math.random()*time)
@@ -178,12 +176,11 @@ let setList = () => {
         let link = document.createElement("p")
         link.addEventListener("click", () => {
             player.muted = true
-            setPlaying(url + "/" + line)
+            setPlaying(line)
         })
         link.id = line
         link.innerHTML = line 
         link.className = "link"
-        console.log(searchTerm)
         if(searchTerm == ""){
             span.appendChild(link)
         }
@@ -266,14 +263,13 @@ function saveClip(){
     for(let line of savedClip){
         let link = document.createElement("p")
         link.addEventListener("click", () => {
-            setPlaying(url + "/" + line[0], line[1])
+            setPlaying(line[0], line[1])
         })
         link.innerHTML = line[0] + " - " + timestampToTime(line[1])
         span.appendChild(link)
     }
     
     let formattedUrl = url + "/" + currentPlaying+"__"+timestamp+"/save"
-    console.log(formattedUrl)
     fetch(formattedUrl)
 }
 
@@ -404,3 +400,13 @@ document.getElementById("pp_right").addEventListener("click", (e) => {
 
 //run
 fetchInfo()
+
+
+//test 
+let button = document.createElement("button")
+document.getElementById("buttonDiv").appendChild(button)
+button.innerHTML="test"
+button.addEventListener('click', (e) =>{
+    setPlaying("test")
+})
+

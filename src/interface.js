@@ -40,6 +40,7 @@ function createList(){
 
 function createButton(){
     let buttonDiv = document.createElement("div") 
+    buttonDiv.id = "buttonDiv"
     buttonDiv.className = "right"
     let random = document.createElement("button")
     random.id = "random"

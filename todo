@@ -1,2 +1,1 @@
 random won't update rand_time right away, it'll take an extra random clip
-fix video set to undefined on reloads (try to reload many times)
