@@ -1,3 +1,1 @@
-see if we need both fileNames and pathNames
-compare content size and their performance
 random won't update rand_time right away, it'll take an extra random clip

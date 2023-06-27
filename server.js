@@ -7,6 +7,8 @@ let vodPath = "vods"
 
 http.createServer(function (req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader("Content-Security-Policy", "script-src 'self'")
+
     let path = req.url.replaceAll("%20"," ")
 
     if(path == '/'){
@@ -56,8 +58,17 @@ let video = (req,res,path) => {
     }
     catch(err){
         console.log(err)
-    }
+    } 
 }
+
+//not sure about all those
+const fileTypes = [
+    "mp4",
+    "mp3",
+    "mkv",
+    "webm",
+    "opus"
+]
 
 let getList = () => {
     let fileList = {}
@@ -74,10 +85,16 @@ let getList = () => {
         }
         catch(err){
             let filename = currentPath.split('/').slice(-1)[0] 
-            fileList[filename] = currentPath                 
+            let correct_type = fileTypes.find((e) => {
+                return e == filename.split(".")[1]
+            })
+            if(correct_type){
+                fileList[filename] = currentPath                 
+            }
         }
     }
 
+    console.log(fileList)
     return fileList
 }
 

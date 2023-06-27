@@ -96,11 +96,14 @@ let setPlaylistArray = () => {
 let setPlaying = (url, time = 0) =>{
     let playing = document.getElementById("playing")
     playing.innerHTML = url.split("/").slice(-1) 
-    console.log(url)
     player.src = url + "/fetch"
     if(time != 0){
         player.currentTime = time
     }
+}
+
+let skip=(time)=>{
+  player.currentTime = player.currentTime +time
 }
 
 let playPrev = () =>{
@@ -126,7 +129,6 @@ let playNext = () =>{
 }
 
 let next_event = new Event("next")
-
 //the click arg (bool) will stop random if button or KeyR clicked (basically toggles)
 //the stop arg (bool) will stop random
 let playRandom = (click, stop) => {
@@ -272,10 +274,6 @@ function shuffleList(){
         fileNames[index2] = temp
     }
     setList()
-}
-
-let skip=(time)=>{
-  player.currentTime = player.currentTime +time
 }
 
 function openFullscreen() {
