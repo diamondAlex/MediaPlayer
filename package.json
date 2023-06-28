@@ -1,7 +1,6 @@
 {
     "scripts": {
         "start": "yarn nodemon --ignore ./local/ ./server.js",
-        "copy": "cp -r ./ /var/www/mediaplayer"
     },
     "dependencies": {},
     "devDependencies": {
