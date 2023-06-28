@@ -170,8 +170,9 @@ let playRandom = (click, stop) => {
             playRandom()
         },{once:true})
         //this is run after the random_duration unless user clicks next
-        currentTimeout = window.setTimeout(() => player.dispatchEvent(next_event)
-            ,random_duration * 1000)
+        currentTimeout = window.setTimeout(() => {
+            player.dispatchEvent(next_event)
+        },random_duration * 1000)
     }, {once:true})
 }
 
@@ -223,7 +224,7 @@ let doubleTouch = function (e) {
             else if(random_flag){
                 //clearTimeout ensures that timeout won't dispatch extra event
                 clearTimeout(currentTimeout)
-                player.dispatchEvent("next")
+                player.dispatchEvent(next_event)
             }
             else{
                 playNext()
