@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "start": "yarn nodemon --ignore ./local/ ./server.js",
+        "start": "yarn nodemon --ignore ./local/ ./server.js"
     },
     "dependencies": {},
     "devDependencies": {

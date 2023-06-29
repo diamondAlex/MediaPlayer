@@ -13,7 +13,7 @@ http.createServer(function (req, res) {
     let path = req.url.replaceAll("%20"," ")
 
     if(path == '/'){
-        let page = fs.readFileSync("src/test.html")
+        let page = fs.readFileSync("src/index.html")
         res.write(page)
         res.end()
     }
