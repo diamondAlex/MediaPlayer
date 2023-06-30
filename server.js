@@ -21,8 +21,11 @@ http.createServer(function (req, res) {
     else if(path.includes("/savedlist")){
         getSavedList(res)
     }
+    else if(path.includes("/del")){
+        delTimestamp(path)
+        res.end()
+    }
     else if(path.includes("/save")){
-        console.log(path)
         saveTimestamp(path)
         res.end()
     }
@@ -118,6 +121,35 @@ let getList = () => {
     return fileList
 }
 
+let delTimestamp = (info) => {
+    let stamp = info.split("/")[1]
+    //need some better unique way of splitting to avoid cases where char
+    //is in the video title
+    let [video, time] = stamp.split("__")
+
+    let fd = fs.openSync("local/timestamps.json","as+")
+
+    let json
+
+    let file = fs.readFileSync(fd)
+    
+    if(file != 0){
+        //remove instead of adding
+        json = JSON.parse(file) 
+        let index = json.findIndex((e) => e.video == video && e.time == time)
+        if(index == json.length -1){
+            json.pop()
+        }
+        else{
+            json = [...json.slice(0,index), ...json.slice(index+1)]
+        }
+    }
+
+    console.log(json)
+    fs.writeFile("local/timestamps.json",JSON.stringify(json), ()=>{})
+    fs.close(fd)
+}
+
 let saveTimestamp = (info) => {
     let stamp = info.split("/")[1]
     //need some better unique way of splitting to avoid cases where char
@@ -132,7 +164,6 @@ let saveTimestamp = (info) => {
     
     if(file != 0){
         json = JSON.parse(file) 
-        console.log(json)
         json.push({video:video,time:time})
     }
     else{

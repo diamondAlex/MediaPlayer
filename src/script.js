@@ -56,12 +56,23 @@ let fetchInfo = () => {
             setList()
             setPlaying(fileNames[randomIndex()])
     })
+    fetchSavedList()
+}
+
+function fetchSavedList(){
     fetch(url+"/savedlist",{
         method:"GET",
     })
         .then((ret) => ret.json())
         .then((json) =>{
-            //this needs to add the proper savedclip for the playlist
+            console.log(json)
+            let newList = []
+            for(let clip of json){
+                newList.push([clip.video,parseFloat(clip.time)])               
+            }
+            savedClip = newList
+            console.log(savedClip)
+            updateSavedClipList()
     })
 }
 
@@ -269,6 +280,28 @@ function saveClip(){
         savedClip.push([currentPlaying,timestamp])
     }
 
+    updateSavedClipList()
+
+    console.log(savedClip)
+    
+    let formattedUrl = url + "/" + currentPlaying+"__"+timestamp+"/save"
+    fetch(formattedUrl)
+}
+
+function delFromSaved(clipName){
+    console.log(clipName)
+    console.log(savedClip)
+    let index = savedClip.findIndex((e) => e[0] == clipName[0] && e[1] == clipName[1])
+    let clipToDel = savedClip[index]
+    let formattedUrl = url + "/" + clipToDel[0] +"__"+clipToDel[1]+"/del"
+    fetch(formattedUrl)
+    .then(() =>{
+        fetchSavedList()
+    })
+}
+
+function updateSavedClipList(){
+    console.log("IN HERE")
     let span = document.getElementById("under")         
     span.innerHTML = ""
     for(let line of savedClip){
@@ -277,11 +310,15 @@ function saveClip(){
             setPlaying(line[0], line[1])
         })
         link.innerHTML = line[0] + " - " + timestampToTime(line[1])
+        let button = document.createElement("button")
+        button.addEventListener("click", () =>{
+            delFromSaved(line) 
+        })
+        button.innerHTML = "X"
+        button.className = "del"
+        link.appendChild(button)
         span.appendChild(link)
     }
-    
-    let formattedUrl = url + "/" + currentPlaying+"__"+timestamp+"/save"
-    fetch(formattedUrl)
 }
 
 function shuffleList(){
@@ -417,13 +454,4 @@ document.getElementById("pp_right").addEventListener("click", (e) => {
 
 //run
 fetchInfo()
-
-
-//test 
-let button = document.createElement("button")
-document.getElementById("buttonDiv").appendChild(button)
-button.innerHTML="test"
-button.addEventListener('click', (e) =>{
-    setPlaying("test")
-})
 
