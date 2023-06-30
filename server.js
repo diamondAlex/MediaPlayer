@@ -145,7 +145,6 @@ let delTimestamp = (info) => {
         }
     }
 
-    console.log(json)
     fs.writeFile("local/timestamps.json",JSON.stringify(json), ()=>{})
     fs.close(fd)
 }
