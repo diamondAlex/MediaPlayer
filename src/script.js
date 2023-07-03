@@ -58,9 +58,7 @@ let fetchInfo = () => {
                 fileNames = Object.keys(pathNames).map((e) => [e,0])
                 setPlaylistArray()
                 setList()
-                console.log(fileNames)
                 let vid = fileNames[randomIndex()]
-                console.log(vid)
                 setPlaying(vid)
         })
     })
@@ -89,7 +87,6 @@ let setCurrentPlaylist = () =>{
     let newFileNames = []
     if(currentPlaylist == 'saved' && savedClip.length != 0){
         for(let clip of savedClip){
-            console.log(clip)
             newFileNames.push(clip)
         }
     }
@@ -117,9 +114,6 @@ let setPlaylistArray = () => {
             playlists.push(path) 
         }
     })
-    if(currentPlaylist == ""){
-        currentPlaylist = playlists[0]
-    }
     setCurrentPlaylist()
 }
 
@@ -128,10 +122,6 @@ let setPlaying = (video, time = 0) =>{
     if(!timestamp){
         timestamp = time
     }
-    console.log(video)
-    console.log(name)
-    console.log(timestamp)
-    console.log(time)
     let playing = document.getElementById("playing")
     playing.innerHTML = name
     player.src = url + "/" + name + "/fetch"
@@ -213,18 +203,26 @@ let setList = () => {
     let span = document.getElementById("list")         
     span.innerHTML = ""
     for(let line of Object.values(fileNames)){
-        let link = document.createElement("p")
         let name = line[0]
+        let img = document.createElement("img")
+        img.src = "thumbnails/" + name
+        img.className = "thumbnail"
+        let link = document.createElement("p")
+        let linkSpan = document.createElement("list")         
         link.addEventListener("click", () => {
             player.muted = true
             setPlaying(line)
         })
-        link.id = name
+        linkSpan.id = name
         if(line[1] != 0){
             name = name + ' - ' + timestampToTime(line[1])
         }
-        link.innerHTML = name 
-        link.className = "link"
+        linkSpan.innerHTML = name 
+        linkSpan.className = "link"
+        link.className = "linkbox"
+        link.appendChild(img)
+        link.appendChild(linkSpan)
+        //this is confusing
         if(searchTerm == ""){
             span.appendChild(link)
         }

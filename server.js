@@ -32,7 +32,7 @@ http.createServer(function (req, res) {
     else if(path.includes("/fetch")){
         let name = getList()[path.split('/')[1]]
         if(name == null){
-            res.statusCode = 500
+            res.status = 500
             res.end()
         }
         video(req,res,name)
@@ -42,6 +42,17 @@ http.createServer(function (req, res) {
         let json = JSON.stringify({files:files})
         res.write(json)
         res.end(); 
+    }
+    else if(path.includes("thumbnails")){
+        try{
+            let page = fs.readFileSync(path.slice(1)+".png")
+            res.write(page)
+            res.end()
+        }
+        catch{
+            res.statusCode = 500 
+            res.end()
+        }
     }
     else{
         let page = fs.readFileSync("src" + path)
