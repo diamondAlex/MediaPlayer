@@ -43,8 +43,7 @@
     /* Apply min height of 4 lines */
     line-height: 1.2;
     min-height: calc(1.2em * 1);
-
-    /* Border styles */
+    cursor:text;
 }
 .playing{
     margin:0.1em;

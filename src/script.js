@@ -222,11 +222,12 @@ let setList = () => {
         link.className = "linkbox"
         link.appendChild(img)
         link.appendChild(linkSpan)
+        console.log(searchTerm)
         //this is confusing
         if(searchTerm == ""){
             span.appendChild(link)
         }
-        else if(link.id.toLowerCase().includes(searchTerm.toLowerCase())){
+        else if(linkSpan.id.toLowerCase().includes(searchTerm.toLowerCase())){
             span.appendChild(link)
         }
     }
@@ -448,6 +449,7 @@ document.getElementById("slider").value = random_duration
 document.getElementById("randTime").innerHTML = random_duration
 
 document.getElementById("search").addEventListener("input", (e) => {
+    console.log('here')
     searchTerm = e.target.innerHTML
     setList()
 })
