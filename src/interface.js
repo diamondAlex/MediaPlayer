@@ -57,9 +57,9 @@ function createButton(){
     save.innerHTML = 'save'
     save.className = "pure-button"
 
-    //sets the random clip duration
+    //shouldn't be written with innerHTML
     let slider = document.createElement("div")
-    slider.innerHTML= `<input type="range" min="1" max="200" class="slider" id="slider"><span id="randTime"></span>`
+    slider.innerHTML= `<input type="range" min="1" max="200" class="slider" id="slider"><span id="randTime" class="slidertime"></span>`
 
     buttonDiv.appendChild(random)
     buttonDiv.appendChild(shuffle)

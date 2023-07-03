@@ -99,8 +99,9 @@ label {
     cursor:pointer;
     background-color: #1f8dd6;
     color: white;
-    padding: 0.5em 2em;
+    padding: 0.2em 1em;
     border-radius: 5px;
+    font-size:125%;
 }
 .del{
     margin-left:2em;
@@ -204,5 +205,10 @@ label {
   opacity:0.5
 }
 .slider{
-    margin:1.5em;
+    margin:1em;
+    font-size:125%;
+}
+.slidertime{
+    margin-left:0.2em;
+    font-size:150%;
 }

@@ -45,33 +45,38 @@ let randomIndex = () =>{
 //----------------------FUNCTIONS ------------------------------
 
 let fetchInfo = () => {
-    fetch(url+"/files",{
-        method:"GET",
-    })
-        .then((ret) => ret.json())
-        .then((json) =>{
-            pathNames= json.files
-            fileNames = Object.keys(pathNames)
-            setPlaylistArray()
-            setList()
-            setPlaying(fileNames[randomIndex()])
-    })
     fetchSavedList()
+    .then(() => {
+        fetch(url+"/files",{
+            method:"GET",
+        })
+            .then((ret) => ret.json())
+            .then((json) =>{
+                //dubious way of adding saved list
+                playlists.push("saved")      
+                pathNames= json.files
+                fileNames = Object.keys(pathNames).map((e) => [e,0])
+                setPlaylistArray()
+                setList()
+                console.log(fileNames)
+                let vid = fileNames[randomIndex()]
+                console.log(vid)
+                setPlaying(vid)
+        })
+    })
 }
 
-function fetchSavedList(){
-    fetch(url+"/savedlist",{
+async function fetchSavedList(){
+    let ret = await fetch(url+"/savedlist",{
         method:"GET",
     })
-        .then((ret) => ret.json())
-        .then((json) =>{
-            let newList = []
-            for(let clip of json){
-                newList.push([clip.video,parseFloat(clip.time)])               
-            }
-            savedClip = newList
-            updateSavedClipList()
-    })
+    let json = await ret.json()
+    let newList = []
+    for(let clip of json){
+        newList.push([clip.video,parseFloat(clip.time)])               
+    }
+    savedClip = newList
+    updateSavedClipList()
 }
 
 //sets the fileNames to that of the currently selected playlist
@@ -82,13 +87,22 @@ let setCurrentPlaylist = () =>{
     currentPlaylist != "" ? placeholder =currentPlaylist : false;
     document.getElementById("pp_value").innerHTML = placeholder
     let newFileNames = []
-    for(let file of Object.values(pathNames)){
-        let path = file.split('/').slice(0,-1).join('/')
-        let fileName = file.split('/').slice(-1)[0]
-        if(path === currentPlaylist){
-            newFileNames.push(fileName)
+    if(currentPlaylist == 'saved' && savedClip.length != 0){
+        for(let clip of savedClip){
+            console.log(clip)
+            newFileNames.push(clip)
         }
     }
+    else{
+        for(let file of Object.values(pathNames)){
+            let path = file.split('/').slice(0,-1).join('/')
+            let fileName = [file.split('/').slice(-1)[0],0]
+            if(path === currentPlaylist){
+                newFileNames.push(fileName)
+            }
+        }
+    }
+
     fileNames = newFileNames
     setList()
 }
@@ -105,17 +119,24 @@ let setPlaylistArray = () => {
     })
     if(currentPlaylist == ""){
         currentPlaylist = playlists[0]
-        setCurrentPlaylist()
     }
+    setCurrentPlaylist()
 }
 
-let setPlaying = (videoName, time = 0) =>{
-    console.log("WHY")
+let setPlaying = (video, time = 0) =>{
+    let [name, timestamp] = video
+    if(!timestamp){
+        timestamp = time
+    }
+    console.log(video)
+    console.log(name)
+    console.log(timestamp)
+    console.log(time)
     let playing = document.getElementById("playing")
-    playing.innerHTML = videoName
-    player.src = url + "/" + videoName + "/fetch"
-    if(time != 0){
-        player.currentTime = time
+    playing.innerHTML = name
+    player.src = url + "/" + name + "/fetch"
+    if(timestamp != 0){
+        player.currentTime = timestamp
     }
 }
 
@@ -193,12 +214,16 @@ let setList = () => {
     span.innerHTML = ""
     for(let line of Object.values(fileNames)){
         let link = document.createElement("p")
+        let name = line[0]
         link.addEventListener("click", () => {
             player.muted = true
             setPlaying(line)
         })
-        link.id = line
-        link.innerHTML = line 
+        link.id = name
+        if(line[1] != 0){
+            name = name + ' - ' + timestampToTime(line[1])
+        }
+        link.innerHTML = name 
         link.className = "link"
         if(searchTerm == ""){
             span.appendChild(link)
@@ -314,6 +339,9 @@ function updateSavedClipList(){
         linkContainer.appendChild(link)
         linkContainer.appendChild(button)
         span.appendChild(linkContainer)
+    }
+    if(currentPlaylist == 'saved'){
+        setCurrentPlaylist()
     }
 }
 
