@@ -81,6 +81,7 @@ function createVideoSection(){
     player.id = "player"
     player.classList.add("videosize")
     player.controls = true
+    player.controlsList = "nodownload"
     player.autoplay = true
     player.muted = true
     
@@ -94,8 +95,31 @@ function createVideoSection(){
     underList.className = "splash-underlist"
     underList.id = "under"
 
+    let over = document.createElement("div")
+    over.id = "over"
+    over.className = "playerover"
+
+    let saveOver = document.createElement("button")
+    saveOver.id = "saveover"
+    saveOver.className = "overcontent"
+    saveOver.innerHTML = "save"
+
+    let nextOver = document.createElement("button")
+    nextOver.id = "nextover"
+    nextOver.className = "overcontent"
+    nextOver.innerHTML = "next"
+    
+    let prevOver = document.createElement("button")
+    prevOver.id = "prevover"
+    prevOver.className = "overcontent"
+    prevOver.innerHTML = "prev"
+
     underVid.appendChild(p)
     underVid.appendChild(underList)
+    over.appendChild(prevOver)
+    over.appendChild(saveOver)
+    over.appendChild(nextOver)
+    player_container.appendChild(over)
     player_container.appendChild(player)
     vid.appendChild(player_container)
     vid.appendChild(underVid)

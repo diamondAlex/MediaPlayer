@@ -126,6 +126,7 @@ let setPlaying = (video, time = 0) =>{
     playing.innerHTML = name
     player.src = url + "/" + name + "/fetch"
     if(timestamp != 0){
+        console.log(timestamp)
         player.currentTime = timestamp
     }
 }
@@ -136,7 +137,7 @@ let skip=(time)=>{
 
 let playPrev = () =>{
     let current = player.src
-    let file = fileNames.findIndex((val) => current.includes(val))
+    let file = fileNames.findIndex((val) => current.includes(val[0]))
     if (file == 0){
         file = fileNames.length
     }
@@ -146,8 +147,10 @@ let playPrev = () =>{
 }
 
 let playNext = () =>{
+    console.log(fileNames)
     let current = player.src
-    let file = fileNames.findIndex((val) => current.includes(val))
+    let file = fileNames.findIndex((val) => current.includes(val[0]))
+    console.log(file)
     if (file == fileNames.length - 1){
         file =-1 
     }
@@ -261,7 +264,7 @@ let doubleTouch = function (e) {
                 player.dispatchEvent(next_event)
             }
             else{
-                playNext()
+                openFullscreen()
             }
             expired = null
             // then reset the variable for other "double Touches" event
@@ -303,6 +306,7 @@ function saveClip(){
         savedClip.push([currentPlaying,timestamp])
     }
 
+    console.log(savedClip)
     updateSavedClipList()
 
     let formattedUrl = url + "/" + currentPlaying+"__"+timestamp+"/save"
@@ -326,7 +330,7 @@ function updateSavedClipList(){
         let linkContainer = document.createElement("p")
         let link = document.createElement("span")
         link.addEventListener("click", () => {
-            setPlaying(line[0], line[1])
+            setPlaying(line)
         })
         link.innerHTML = line[0] + " - " + timestampToTime(line[1])
         let button = document.createElement("button")
@@ -357,15 +361,17 @@ function shuffleList(){
 }
 
 function openFullscreen() {
+    console.log("should")
+    let div = document.getElementById("player_container")
     if(document.fullscreenElement){
         document.exitFullscreen() 
     }
     else if (player.requestFullscreen) {
-        player.requestFullscreen();
+        div.requestFullscreen();
     } else if (player.webkitRequestFullscreen) { /* Safari */
-            player.webkitRequestFullscreen();
+        div.webkitRequestFullscreen();
     } else if (player.msRequestFullscreen) { /* IE11 */
-            player.msRequestFullscreen();
+        div.msRequestFullscreen();
     }
 }
 
@@ -420,6 +426,7 @@ document.addEventListener("keydown", (e) => {
             clearTimeout(currentTimeout) 
             player.dispatchEvent(next_event) 
         }else{
+            console.log("next?")
             playNext()
         }
     }
@@ -474,6 +481,64 @@ document.getElementById("pp_right").addEventListener("click", (e) => {
         currentPlaylist = playlists[current_index+1]
     }
     setCurrentPlaylist()
+})
+
+document.getElementById("player").addEventListener("mouseover", (e) =>{
+    let test = document.getElementById("over")
+    test.style["display"] = "inline"
+})
+
+document.getElementById("player").addEventListener("mouseleave", (e) =>{
+    let element = document.elementFromPoint(e.clientX,e.clientY)
+    if(!element.id.includes("over")){
+        let test = document.getElementById("over")
+        test.style["display"] = "none"
+    }
+
+})
+
+document.getElementById("player").addEventListener("touchstart", (e) =>{
+    setTimeout(() => {
+        let test = document.getElementById("over")
+        test.style["display"] = "inline"
+    },500)
+})
+
+document.getElementById("player").addEventListener("touchend", (e) =>{
+    setTimeout(() => {
+        let test = document.getElementById("over")
+        test.style["display"] = "none"
+    },3000)
+})
+
+//so bloated
+document.getElementById("saveover").addEventListener("click", (e) =>{
+    saveClip()
+})
+
+document.getElementById("nextover").addEventListener("click", (e) =>{
+    playNext()
+})
+
+document.getElementById("prevover").addEventListener("click", (e) =>{
+    playPrev()
+})
+
+document.getElementById("saveover").addEventListener("touchstart", (e) =>{
+    saveClip()
+})
+
+document.getElementById("nextover").addEventListener("touchstart", (e) =>{
+    playNext()
+})
+
+document.getElementById("prevover").addEventListener("touchstart", (e) =>{
+    playPrev()
+})
+
+player.addEventListener("dblclick", (e) =>{
+    console.log(e.target)
+    openFullscreen()
 })
 
 let options = {
