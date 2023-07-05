@@ -205,7 +205,7 @@ let setList = () => {
     for(let line of Object.values(fileNames)){
         let name = line[0]
         let img = document.createElement("img")
-        img.src = "thumbnails/" + name
+        img.data_src = "thumbnails/" + name
         img.className = "thumbnail"
         let link = document.createElement("p")
         let linkSpan = document.createElement("list")         
@@ -222,7 +222,7 @@ let setList = () => {
         link.className = "linkbox"
         link.appendChild(img)
         link.appendChild(linkSpan)
-        console.log(searchTerm)
+        observer.observe(img)
         //this is confusing
         if(searchTerm == ""){
             span.appendChild(link)
@@ -476,6 +476,19 @@ document.getElementById("pp_right").addEventListener("click", (e) => {
     setCurrentPlaylist()
 })
 
+let options = {
+    root: document.getElementById("list_container"),
+    rootMargin: "0px",
+    threshold: 0.0,
+};
+
+let observer = new IntersectionObserver((entries, observer) =>{
+    entries.forEach((entry) => {
+        if(entry.target.src == "" && entry.isIntersecting){
+            entry.target.src = entry.target.data_src
+        }
+    })
+},options)
+
 //run
 fetchInfo()
-
