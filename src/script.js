@@ -117,17 +117,38 @@ let setPlaylistArray = () => {
     setCurrentPlaylist()
 }
 
-let setPlaying = (video, time = 0) =>{
+let setPlaying = async (video, time = 0) =>{
     let [name, timestamp] = video
     if(!timestamp){
         timestamp = time
     }
     let playing = document.getElementById("playing")
-    playing.innerHTML = name
-    player.src = url + "/" + name + "/fetch"
-    if(timestamp != 0){
-        console.log(timestamp)
-        player.currentTime = timestamp
+    let vidUrl = url + "/" + name + "/fetch"
+
+    let res = parseInt(await (await fetch(url+"/exists/"+name)).text())
+    console.log(res)
+
+    if(Hls.isSupported() && res) {
+        var hls = new Hls();
+        playing.innerHTML = name
+        hls.loadSource(vidUrl + "/m3");
+        hls.attachMedia(player);
+        hls.on(Hls.Events.MANIFEST_PARSED,function() {
+            player.play();
+            if(timestamp != 0){
+                console.log(timestamp)
+                player.currentTime = timestamp
+            }
+        });
+    }
+    else{
+        console.log("not there")
+        playing.innerHTML = name
+        player.src = vidUrl + "/mp4" 
+        if(timestamp != 0){
+            console.log(timestamp)
+            player.currentTime = timestamp
+        }
     }
 }
 
