@@ -11,7 +11,6 @@ http.createServer(function (req, res) {
     //res.setHeader("Content-Security-Policy", "script-src 'self'")
 
     let path = req.url.replaceAll("%20"," ")
-    console.log(path)
 
     if(path == '/'){
         let page = fs.readFileSync("src/index.html")
@@ -39,7 +38,6 @@ http.createServer(function (req, res) {
     else if(path.includes("exists")){
         let namePath = "./m3u8/" + path.split("/")[2]
         try{
-            console.log(`namePath = ${ namePath }`)
             let file = fs.readdirSync(namePath)
             res.write('1')
             res.end()
@@ -58,14 +56,12 @@ http.createServer(function (req, res) {
     else if(path.includes("/fetch")){
         let name = getList()[path.split('/')[1]]
         if(path.includes("m3")){
-            console.log("do got it")
             let filepath = path.split("/")[1]
             let file = fs.readFileSync("./m3u8/"+filepath+"/master.m3u8")
             res.write(file)
             res.end()
         }
         else{
-            console.log("don't got it")
             video(req,res,name)
         }
     }

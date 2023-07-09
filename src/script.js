@@ -56,6 +56,7 @@ let fetchInfo = () => {
                 playlists.push("saved")      
                 pathNames= json.files
                 fileNames = Object.keys(pathNames).map((e) => [e,0])
+                console.log(fileNames)
                 setPlaylistArray()
                 setList()
                 let vid = fileNames[randomIndex()]
@@ -68,13 +69,20 @@ async function fetchSavedList(){
     let ret = await fetch(url+"/savedlist",{
         method:"GET",
     })
-    let json = await ret.json()
-    let newList = []
-    for(let clip of json){
-        newList.push([clip.video,parseFloat(clip.time)])               
+    try{
+        let json = await ret.json()
+        console.log(ret)
+        let newList = []
+        for(let clip of json){
+            newList.push([clip.video,parseFloat(clip.time)])               
+        }
+        savedClip = newList
+        console.log(savedClip)
+        updateSavedClipList()
     }
-    savedClip = newList
-    updateSavedClipList()
+    catch(err){
+        console.log("no savedClip") 
+    }
 }
 
 //sets the fileNames to that of the currently selected playlist
@@ -545,17 +553,6 @@ document.getElementById("prevover").addEventListener("click", (e) =>{
     playPrev()
 })
 
-document.getElementById("saveover").addEventListener("touchstart", (e) =>{
-    saveClip()
-})
-
-document.getElementById("nextover").addEventListener("touchstart", (e) =>{
-    playNext()
-})
-
-document.getElementById("prevover").addEventListener("touchstart", (e) =>{
-    playPrev()
-})
 
 player.addEventListener("dblclick", (e) =>{
     console.log(e.target)
