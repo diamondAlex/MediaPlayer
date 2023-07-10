@@ -94,10 +94,14 @@ label {
  * I want my pure-button elements to look a little different
  */
 .pure-button {
+    border:solid;
+    width:5em;
+    margin:0.5em;
+    border-color:white;
     cursor:pointer;
     background-color: #1f8dd6;
     color: white;
-    padding: 0.2em 1em;
+    padding: 0.2em ;
     border-radius: 5px;
     font-size:125%;
 }
@@ -197,11 +201,12 @@ label {
     overflow-x:hidden;
     border: 1px solid white;
     border-radius: 4px;
+    cursor:pointer;
 }
-[contentEditable=true]:empty:not(:focus):before {
-  content: attr(datatext);
-  opacity:0.5
-}
+/*[contentEditable=true]:empty:not(:focus):before {*/
+  /*content: attr(datatext);*/
+  /*opacity:0.5*/
+/*}*/
 .slider{
     margin:1em;
     font-size:125%;

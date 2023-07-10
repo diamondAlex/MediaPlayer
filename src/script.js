@@ -6,6 +6,9 @@ let random_duration = 5
 let url = window.location.origin
 let fileNames = []
 
+//could be the index instead?
+let currentlyPlaying = ""
+
 //needed for playlist
 //{"vidname":"vidfullpath"}
 let pathNames = {}
@@ -56,6 +59,7 @@ let fetchInfo = () => {
                 playlists.push("saved")      
                 pathNames= json.files
                 fileNames = Object.keys(pathNames).map((e) => [e,0])
+                console.log(fileNames)
                 setPlaylistArray()
                 setList()
                 let vid = fileNames[randomIndex()]
@@ -68,13 +72,20 @@ async function fetchSavedList(){
     let ret = await fetch(url+"/savedlist",{
         method:"GET",
     })
-    let json = await ret.json()
-    let newList = []
-    for(let clip of json){
-        newList.push([clip.video,parseFloat(clip.time)])               
+    try{
+        let json = await ret.json()
+        console.log(ret)
+        let newList = []
+        for(let clip of json){
+            newList.push([clip.video,parseFloat(clip.time)])               
+        }
+        savedClip = newList
+        console.log(savedClip)
+        updateSavedClipList()
     }
-    savedClip = newList
-    updateSavedClipList()
+    catch(err){
+        console.log("no savedClip") 
+    }
 }
 
 //sets the fileNames to that of the currently selected playlist
@@ -117,17 +128,38 @@ let setPlaylistArray = () => {
     setCurrentPlaylist()
 }
 
-let setPlaying = (video, time = 0) =>{
+let setPlaying = async (video, time = 0) =>{
     let [name, timestamp] = video
     if(!timestamp){
         timestamp = time
     }
     let playing = document.getElementById("playing")
-    playing.innerHTML = name
-    player.src = url + "/" + name + "/fetch"
-    if(timestamp != 0){
-        console.log(timestamp)
-        player.currentTime = timestamp
+    let vidUrl = url + "/" + name + "/fetch"
+
+    let res = parseInt(await (await fetch(url+"/exists/"+name)).text())
+
+    if(Hls.isSupported() && res) {
+        var hls = new Hls();
+        playing.innerHTML = name
+        currentlyPlaying = name
+        hls.loadSource(vidUrl + "/m3");
+        hls.attachMedia(player);
+        hls.on(Hls.Events.MANIFEST_PARSED,function() {
+            player.play();
+            if(timestamp != 0){
+                player.currentTime = timestamp
+            }
+        });
+    }
+    else{
+        console.log("not there")
+        currentlyPlaying = name
+        playing.innerHTML = name
+        player.src = vidUrl + "/mp4" 
+        if(timestamp != 0){
+            console.log(timestamp)
+            player.currentTime = timestamp
+        }
     }
 }
 
@@ -136,8 +168,7 @@ let skip=(time)=>{
 }
 
 let playPrev = () =>{
-    let current = player.src
-    let file = fileNames.findIndex((val) => current.includes(val[0]))
+    let file = fileNames.findIndex((val) => currentlyPlaying.includes(val[0]))
     if (file == 0){
         file = fileNames.length
     }
@@ -147,9 +178,10 @@ let playPrev = () =>{
 }
 
 let playNext = () =>{
-    console.log(fileNames)
     let current = player.src
-    let file = fileNames.findIndex((val) => current.includes(val[0]))
+    console.log(fileNames)
+    console.log(current)
+    let file = fileNames.findIndex((val) => currentlyPlaying.includes(val[0]))
     console.log(file)
     if (file == fileNames.length - 1){
         file =-1 
@@ -524,17 +556,6 @@ document.getElementById("prevover").addEventListener("click", (e) =>{
     playPrev()
 })
 
-document.getElementById("saveover").addEventListener("touchstart", (e) =>{
-    saveClip()
-})
-
-document.getElementById("nextover").addEventListener("touchstart", (e) =>{
-    playNext()
-})
-
-document.getElementById("prevover").addEventListener("touchstart", (e) =>{
-    playPrev()
-})
 
 player.addEventListener("dblclick", (e) =>{
     console.log(e.target)

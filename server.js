@@ -8,7 +8,7 @@ let vodPath = "vods"
 
 http.createServer(function (req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader("Content-Security-Policy", "script-src 'self'")
+    //res.setHeader("Content-Security-Policy", "script-src 'self'")
 
     let path = req.url.replaceAll("%20"," ")
 
@@ -29,13 +29,41 @@ http.createServer(function (req, res) {
         saveTimestamp(path)
         res.end()
     }
-    else if(path.includes("/fetch")){
-        let name = getList()[path.split('/')[1]]
-        if(name == null){
-            res.status = 500
+    else if(path.includes("m3u8")){
+        let pathName = path.slice(1).split('/')
+        let file = fs.readFileSync("m3u8/"+pathName[0]+"/" + pathName[2] )
+        res.write(file)
+        res.end()
+    }
+    else if(path.includes("exists")){
+        let namePath = "./m3u8/" + path.split("/")[2]
+        try{
+            let file = fs.readdirSync(namePath)
+            res.write('1')
             res.end()
         }
-        video(req,res,name)
+        catch(e){
+            res.write('0')
+            res.end()
+        }
+    }
+    else if(path.includes(".ts")){
+        let pathName = path.slice(1).split('/')
+        let file = fs.readFileSync("m3u8/"+pathName[0]+"/" + pathName[2] )
+        res.write(file)
+        res.end()
+    }
+    else if(path.includes("/fetch")){
+        let name = getList()[path.split('/')[1]]
+        if(path.includes("m3")){
+            let filepath = path.split("/")[1]
+            let file = fs.readFileSync("./m3u8/"+filepath+"/master.m3u8")
+            res.write(file)
+            res.end()
+        }
+        else{
+            video(req,res,name)
+        }
     }
     else if(path == "/files"){
         let files = getList()
