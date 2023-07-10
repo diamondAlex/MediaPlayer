@@ -201,11 +201,12 @@ label {
     overflow-x:hidden;
     border: 1px solid white;
     border-radius: 4px;
+    cursor:pointer;
 }
-[contentEditable=true]:empty:not(:focus):before {
-  content: attr(datatext);
-  opacity:0.5
-}
+/*[contentEditable=true]:empty:not(:focus):before {*/
+  /*content: attr(datatext);*/
+  /*opacity:0.5*/
+/*}*/
 .slider{
     margin:1em;
     font-size:125%;

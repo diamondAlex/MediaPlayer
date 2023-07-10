@@ -6,6 +6,9 @@ let random_duration = 5
 let url = window.location.origin
 let fileNames = []
 
+//could be the index instead?
+let currentlyPlaying = ""
+
 //needed for playlist
 //{"vidname":"vidfullpath"}
 let pathNames = {}
@@ -134,23 +137,23 @@ let setPlaying = async (video, time = 0) =>{
     let vidUrl = url + "/" + name + "/fetch"
 
     let res = parseInt(await (await fetch(url+"/exists/"+name)).text())
-    console.log(res)
 
     if(Hls.isSupported() && res) {
         var hls = new Hls();
         playing.innerHTML = name
+        currentlyPlaying = name
         hls.loadSource(vidUrl + "/m3");
         hls.attachMedia(player);
         hls.on(Hls.Events.MANIFEST_PARSED,function() {
             player.play();
             if(timestamp != 0){
-                console.log(timestamp)
                 player.currentTime = timestamp
             }
         });
     }
     else{
         console.log("not there")
+        currentlyPlaying = name
         playing.innerHTML = name
         player.src = vidUrl + "/mp4" 
         if(timestamp != 0){
@@ -165,8 +168,7 @@ let skip=(time)=>{
 }
 
 let playPrev = () =>{
-    let current = player.src
-    let file = fileNames.findIndex((val) => current.includes(val[0]))
+    let file = fileNames.findIndex((val) => currentlyPlaying.includes(val[0]))
     if (file == 0){
         file = fileNames.length
     }
@@ -176,9 +178,10 @@ let playPrev = () =>{
 }
 
 let playNext = () =>{
-    console.log(fileNames)
     let current = player.src
-    let file = fileNames.findIndex((val) => current.includes(val[0]))
+    console.log(fileNames)
+    console.log(current)
+    let file = fileNames.findIndex((val) => currentlyPlaying.includes(val[0]))
     console.log(file)
     if (file == fileNames.length - 1){
         file =-1 
