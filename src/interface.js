@@ -41,25 +41,28 @@ function createList(){
 function createButton(){
     let buttonDiv = document.createElement("div") 
     buttonDiv.id = "buttonDiv"
-    buttonDiv.className = "right"
+    buttonDiv.classList.add("right")
     let random = document.createElement("button")
     random.id = "random"
     random.innerHTML = 'random'
     random.className = "pure-button"
+    random.classList.add("buttondiv")
 
     let shuffle = document.createElement("button")
     shuffle.id = "shuffle"
     shuffle.innerHTML = 'shuffle'
     shuffle.className = "pure-button"
+    shuffle.classList.add("buttondiv")
 
     let save = document.createElement("button")
     save.id = "save"
     save.innerHTML = 'save'
     save.className = "pure-button"
+    save.classList.add("buttondiv")
 
     //shouldn't be written with innerHTML
     let slider = document.createElement("div")
-    slider.innerHTML= `<input type="range" min="1" max="200" class="slider" id="slider"><span id="randTime" class="slidertime"></span>`
+    slider.innerHTML= `<input type="range" min="1" max="200" class="slider buttondiv" id="slider"><span id="randTime" class="slidertime buttondiv"></span>`
 
     buttonDiv.appendChild(random)
     buttonDiv.appendChild(shuffle)

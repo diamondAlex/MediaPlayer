@@ -15,11 +15,19 @@
     padding-left:15px;
     float:left;
 }
+.buttondiv{
+    margin:0.2em;
+    font-size:150%;
+}
 .player_container{
     position: relative;
     width:100%;
     height:65%;
     background-color:black;
+}
+.slidertime{
+    font-size:175%;  
+
 }
 .videosize {
     width: 100%; 
@@ -96,14 +104,12 @@ label {
 .pure-button {
     border:solid;
     width:5em;
-    margin:0.5em;
     border-color:white;
     cursor:pointer;
     background-color: #1f8dd6;
     color: white;
     padding: 0.2em ;
     border-radius: 5px;
-    font-size:125%;
 }
 .del{
     margin-left:2em;
@@ -209,11 +215,12 @@ label {
 /*}*/
 .slider{
     margin:1em;
-    font-size:125%;
-}
-.slidertime{
-    margin-left:0.2em;
-    font-size:150%;
+    width: 50%; /* Full-width */
+    height: 25px; /* Specified height */
+    accent-color: white;
+    opacity: 0.8; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
 }
 .thumbnail{
     width:7em;
