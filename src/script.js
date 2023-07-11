@@ -530,17 +530,24 @@ document.getElementById("player").addEventListener("mouseleave", (e) =>{
 })
 
 document.getElementById("player").addEventListener("touchstart", (e) =>{
+    if(closeOver != 0){
+        clearTimeout(closeOver) 
+        closeOver = 0
+    }
     setTimeout(() => {
         let test = document.getElementById("over")
         test.style["display"] = "inline"
     },500)
 })
 
+let closeOver = 0
+
+//it would be cool if it could behave like the player's control but w/e for now
 document.getElementById("player").addEventListener("touchend", (e) =>{
-    setTimeout(() => {
+    closeOver = window.setTimeout(() => {
         let test = document.getElementById("over")
         test.style["display"] = "none"
-    },3000)
+    },2000)
 })
 
 //so bloated

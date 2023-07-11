@@ -18,7 +18,7 @@ function createList(){
     `
     let search = document.createElement("div") 
     search.contentEditable = true
-    //search.setAttribute("datatext", "search")
+    search.setAttribute("placeholder", "search")
     search.classList.add('search')
     search.id = 'search'
     //list of files
