@@ -24,9 +24,6 @@
     width:100%;
     height:65%;
     background-color:black;
-    border:solid;
-    border-radius:4px;
-    border-width:4px;
 }
 .slidertime{
     font-size:175%;  
@@ -113,6 +110,9 @@ label {
     color: white;
     padding: 0.2em ;
     border-radius: 5px;
+}
+.pure-button:active {
+  transform: translateY(2px);
 }
 .del{
     margin-left:2em;
@@ -243,27 +243,7 @@ label {
     margin:1em;
     font-size:125%;
 }
-.playerover{
-    border-color:white;
-    display:none;
-    width:50%;
-    height:5%;
-    font-size:250%;
-    margin:1em;
-    position:absolute;
-    z-index:9;
-}
-.overcontent{
-	background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
-    margin-left:1em;
-    margin-top:1em;
-}
+
 ::-webkit-scrollbar {
     width: 12px;
 }
@@ -285,3 +265,87 @@ label {
   opacity:0.5;
   background-color: transparent;
 }
+
+/*video overlay*/
+.playerover{
+    -webkit-tap-highlight-color: transparent;
+    display:none;
+    width:100%;
+    height:5%;
+    font-size:300%;
+    text-align:center;
+    margin-top:0.5em;
+    position:absolute;
+    z-index:9;
+}
+.overcontent{
+	background: none;
+	color: grey;
+	border: none;
+	padding: 0;
+	font: inherit;
+	outline: inherit;
+    transition:all 0.5s;
+}
+.overcontent_left {
+    padding-right:2em;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.overcontent_left:after {
+  content: '\00ab';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: -20px;
+  transition: 0.5s;
+}
+
+.overcontent_left:hover{
+  padding-left: 25px;
+  opacity: 0.5;
+}
+
+.overcontent_left:hover:after {
+  opacity: 1;
+  left: 0;
+}
+.overcontent_right {
+    padding-left:2em;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.overcontent_right:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.overcontent_right:hover{
+  padding-right: 25px;
+  opacity: 0.5;
+}
+
+.overcontent_right:hover:after {
+  opacity: 1;
+  right: 0;
+}
+.overcontent_save {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+.overcontent_save:hover{
+    opacity:0.5;
+}
+

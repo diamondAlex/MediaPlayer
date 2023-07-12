@@ -3,15 +3,14 @@ let random_duration = 5
 
 /*--------------variables ----------------------- */
 
-let url = window.location.origin
-let fileNames = []
 
 //could be the index instead?
 let currentlyPlaying = ""
 
-//needed for playlist
 //{"vidname":"vidfullpath"}
 let pathNames = {}
+//[[vidname, timestamp],...]
+let fileNames = []
 
 let playlists = []
 let currentPlaylist = ""
@@ -48,6 +47,7 @@ let randomIndex = () =>{
 //----------------------FUNCTIONS ------------------------------
 
 let fetchInfo = () => {
+    let url = window.location.origin
     fetchSavedList()
     .then(() => {
         fetch(url+"/files",{
@@ -59,7 +59,6 @@ let fetchInfo = () => {
                 playlists.push("saved")      
                 pathNames= json.files
                 fileNames = Object.keys(pathNames).map((e) => [e,0])
-                console.log(fileNames)
                 setPlaylistArray()
                 setList()
                 let vid = fileNames[randomIndex()]
@@ -69,18 +68,17 @@ let fetchInfo = () => {
 }
 
 async function fetchSavedList(){
+    let url = window.location.origin
     let ret = await fetch(url+"/savedlist",{
         method:"GET",
     })
     try{
         let json = await ret.json()
-        console.log(ret)
         let newList = []
         for(let clip of json){
             newList.push([clip.video,parseFloat(clip.time)])               
         }
         savedClip = newList
-        console.log(savedClip)
         updateSavedClipList()
     }
     catch(err){
@@ -130,6 +128,7 @@ let setPlaylistArray = () => {
 
 let setPlaying = async (video, time = 0) =>{
     let [name, timestamp] = video
+    let url = window.location.origin
     if(!timestamp){
         timestamp = time
     }
@@ -152,12 +151,10 @@ let setPlaying = async (video, time = 0) =>{
         });
     }
     else{
-        console.log("not there")
         currentlyPlaying = name
         playing.innerHTML = name
         player.src = vidUrl + "/mp4" 
         if(timestamp != 0){
-            console.log(timestamp)
             player.currentTime = timestamp
         }
     }
@@ -179,10 +176,7 @@ let playPrev = () =>{
 
 let playNext = () =>{
     let current = player.src
-    console.log(fileNames)
-    console.log(current)
     let file = fileNames.findIndex((val) => currentlyPlaying.includes(val[0]))
-    console.log(file)
     if (file == fileNames.length - 1){
         file =-1 
     }
@@ -288,15 +282,10 @@ let doubleTouch = function (e) {
         } else if (e.timeStamp <= expired) {
             // only next if double click player
             if(!document.fullscreenElement){
-                openFullscreen()
-            }
-            else if(random_flag){
-                //clearTimeout ensures that timeout won't dispatch extra event
-                clearTimeout(currentTimeout)
-                player.dispatchEvent(next_event)
+                toggleFullscreen()
             }
             else{
-                openFullscreen()
+                toggleFullscreen()
             }
             expired = null
             // then reset the variable for other "double Touches" event
@@ -326,26 +315,22 @@ function playSaved(key){
     }
 }
 
-//will have to remove the queue logic
 function saveClip(){
+    let url = window.location.origin
     let currentPlaying = document.getElementById("playing").innerHTML
     let timestamp = player.currentTime
-    if(savedClip.length < 10){
-        savedClip.push([currentPlaying,timestamp])
-    }
-    else{
-        savedClip.shift()
-        savedClip.push([currentPlaying,timestamp])
-    }
 
-    console.log(savedClip)
+    savedClip.push([currentPlaying,timestamp])
+
     updateSavedClipList()
 
+    //saving list on server
     let formattedUrl = url + "/" + currentPlaying+"__"+timestamp+"/save"
     fetch(formattedUrl)
 }
 
 function delFromSaved(clipName){
+    let url = window.location.origin
     let index = savedClip.findIndex((e) => e[0] == clipName[0] && e[1] == clipName[1])
     let clipToDel = savedClip[index]
     let formattedUrl = url + "/" + clipToDel[0] +"__"+clipToDel[1]+"/del"
@@ -365,14 +350,17 @@ function updateSavedClipList(){
             setPlaying(line)
         })
         link.innerHTML = line[0] + " - " + timestampToTime(line[1])
+
         let button = document.createElement("button")
         button.addEventListener("click", () =>{
             delFromSaved(line) 
         })
         button.innerHTML = "X"
         button.className = "del"
+
         linkContainer.appendChild(link)
         linkContainer.appendChild(button)
+
         span.appendChild(linkContainer)
     }
     if(currentPlaylist == 'saved'){
@@ -392,8 +380,7 @@ function shuffleList(){
     setList()
 }
 
-function openFullscreen() {
-    console.log("should")
+function toggleFullscreen() {
     let div = document.getElementById("player_container")
     if(document.fullscreenElement){
         document.exitFullscreen() 
@@ -458,12 +445,11 @@ document.addEventListener("keydown", (e) => {
             clearTimeout(currentTimeout) 
             player.dispatchEvent(next_event) 
         }else{
-            console.log("next?")
             playNext()
         }
     }
     else if(!e.ctrlKey && c=="KeyF"){
-        openFullscreen()
+        toggleFullscreen()
     }
     else if(c=="Space"){
         e.preventDefault()
@@ -488,7 +474,6 @@ document.getElementById("slider").value = random_duration
 document.getElementById("randTime").innerHTML = random_duration
 
 document.getElementById("search").addEventListener("input", (e) => {
-    console.log('here')
     searchTerm = e.target.innerHTML
     setList()
 })
@@ -565,8 +550,7 @@ document.getElementById("prevover").addEventListener("click", (e) =>{
 
 
 player.addEventListener("dblclick", (e) =>{
-    console.log(e.target)
-    openFullscreen()
+    toggleFullscreen()
 })
 
 let options = {

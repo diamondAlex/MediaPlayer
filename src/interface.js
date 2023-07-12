@@ -84,7 +84,7 @@ function createVideoSection(){
     player.id = "player"
     player.classList.add("videosize")
     player.controls = true
-    player.controlsList = "nodownload"
+    player.controlsList = "nofullscreen nodownload"
     player.autoplay = true
     player.muted = true
     
@@ -104,17 +104,17 @@ function createVideoSection(){
 
     let saveOver = document.createElement("button")
     saveOver.id = "saveover"
-    saveOver.className = "overcontent"
+    saveOver.className = "overcontent overcontent_save"
     saveOver.innerHTML = "save"
 
     let nextOver = document.createElement("button")
     nextOver.id = "nextover"
-    nextOver.className = "overcontent"
+    nextOver.className = "overcontent overcontent_right"
     nextOver.innerHTML = "next"
     
     let prevOver = document.createElement("button")
     prevOver.id = "prevover"
-    prevOver.className = "overcontent"
+    prevOver.className = "overcontent overcontent_left"
     prevOver.innerHTML = "prev"
 
     underVid.appendChild(p)
