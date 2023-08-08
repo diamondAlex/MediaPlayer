@@ -541,7 +541,12 @@ document.getElementById("saveover").addEventListener("click", (e) =>{
 })
 
 document.getElementById("nextover").addEventListener("click", (e) =>{
-    playNext()
+    if(random_flag){
+        playRandom()
+    }
+    else{
+        playNext()
+    }
 })
 
 document.getElementById("prevover").addEventListener("click", (e) =>{
