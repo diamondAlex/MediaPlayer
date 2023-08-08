@@ -542,7 +542,8 @@ document.getElementById("saveover").addEventListener("click", (e) =>{
 
 document.getElementById("nextover").addEventListener("click", (e) =>{
     if(random_flag){
-        playRandom()
+        clearTimeout(currentTimeout) 
+        player.dispatchEvent(next_event) 
     }
     else{
         playNext()
