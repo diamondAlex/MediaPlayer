@@ -260,7 +260,6 @@ label {
 }
 [contenteditable][placeholder]:empty:before {
   content: attr(placeholder);
-  position: absolute;
   color: white;
   opacity:0.5;
   background-color: transparent;

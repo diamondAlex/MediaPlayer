@@ -32,6 +32,8 @@ let savedClip = []
 
 let searchTerm = ""
 
+let skipTime = 5
+
 /*------------------------------------------ */
 
 //player 
@@ -418,14 +420,15 @@ document.getElementById("save").addEventListener("click",()=>saveClip())
 document.addEventListener("keydown", (e) => {
     if(document.activeElement.id == 'search') return
     let c = e.code
+    console.log(c)
     if(c=="ArrowLeft"){
-        skip(-15);
+        skip(-skipTime);
     }
     else if(e.ctrlKey && c.includes("Digit")){
         playSaved(c)
     }
     else if(c=="ArrowRight"){
-        skip(15);
+        skip(skipTime);
     }
     else if(!e.ctrlKey && c=="KeyR"){
         playRandom(1)
@@ -458,6 +461,13 @@ document.addEventListener("keydown", (e) => {
     else if(c.includes("Digit")){
         let time = split.get(parseInt(c.slice(-1)))
         player.currentTime = time
+    }
+    else if(c.includes("Numpad")){
+        let last = c.slice(-1)
+        if(parseInt(last)){
+            let time = split.get(parseInt(c.slice(-1)))
+            player.currentTime = time
+        }
     }
 
 })
