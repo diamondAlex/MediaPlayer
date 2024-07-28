@@ -1,1 +1,4 @@
-most buttons are too small on mobile
+click on video should pause
+if the video is clicked on, space will by default pause, which cancels out the keydown event (so it pauses and unpauses)
+the video overlay needs to hide after X seconds
+have conditional styling based on screen size
